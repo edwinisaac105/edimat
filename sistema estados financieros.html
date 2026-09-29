@@ -243,7 +243,7 @@ table.tags td.e{font-family:'JetBrains Mono',monospace;color:var(--cy);font-size
           <div class="grid2">
             <div class="field"><label>Capital emitido</label><input type="number" id="pCap" value="10000"></div>
             <div class="field"><label>Prima de emisión</label><input type="number" id="pPri" value="4000"></div>
-            <div class="field"><label>Ganancias acumuladas al inicio</label><input type="number" id="pIni" value="10000"></div>
+            <div class="field"><label>Ganancias acumuladas al inicio</label><input type="number" id="pIni" value="10576"></div>
             <div class="field"><label>Provisiones no corrientes</label><input type="number" id="pPnc" value="800"></div>
             <div class="field"><label>Pasivos financieros no corrientes</label><input type="number" id="pFnc" value="9000"></div>
             <div class="field"><label>Pasivos por impuestos diferidos</label><input type="number" id="pDtl" value="1300"></div>
@@ -338,7 +338,7 @@ const $=s=>document.querySelector(s);
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const NF=new Intl.NumberFormat('es-ES',{maximumFractionDigits:2});
 const money=n=>(n<0?'(':'')+NF.format(Math.round(n*100)/100)+(n<0?')':'');
-const g=id=>parseFloat((document.getElementById(id)||{}).value)||0;
+const g=id=>parseFloat((document.getElementById(id.replace(/^#/,''))||{}).value)||0;
 const RF=(full,pyme)=>MODE==='full'?full:pyme;
 
 function showTab(t){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.t===t));document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active',p.id==='pane-'+t));}
@@ -838,7 +838,9 @@ function renderChecks(nTags,nNotes){
    [nNotes>=30,`Notas generadas: ${nNotes} notas del catálogo [800500]`,'Incluye notas «no aplica» justificadas'],
    [true,'Bloques taxonómicos verificados','[210000] [220000] [310000] [320000] [410000] [420000] [510000] [520000] [610000] '+ (MODE==='full'?'[710000]':'[650000]')],
    [true,'Marco normativo confirmado',MODE==='full'?'NIIF Completas · Taxonomía NIIF 2024':'NIIF para las PYMES · Secciones 1–35']];
-  $('#valOut').innerHTML=`<span class="tag">Agente 4.2 · Control de Calidad</span><div style="margin-top:10px">${checksHTML(list)}</div>`;
+  const passed=list.filter(c=>c[0]).length,failed=list.length-passed;
+  $('#valOut').innerHTML=`<span class="tag">Agente 4.2 · Control de Calidad</span><div style="margin:10px 0;color:${failed?'var(--am)':'var(--gn)'};font-weight:700">${passed}/${list.length} verificaciones aprobadas${failed?` · ${failed} con observaciones`:' · sin excepciones'}</div>${checksHTML(list)}`;
+  return {total:list.length,passed,failed};
 }
 function checksHTML(list){return list.map(c=>`<div class="check"><div class="badge ${c[0]?'ok':''}">${c[0]?'✓':'✗'}</div><div><b style="font-size:12.5px">${c[1]}</b><div style="color:var(--mut);font-size:11px" class="mono">${c[2]}</div></div></div>`).join('');}
 
@@ -859,7 +861,7 @@ const stepsBase=[
  ['sa4','[SA-4 Reporte]','w-sa','Ensamblando el paquete de reporte…'],
  ['a41','[Agente 4.1]','w-ag','Generando {NE} estados financieros: [210000] [220000] [310000] [320000] [410000] [420000] [510000] [520000] [610000] {LAST}.'],
  ['a44','[Agente 4.4]','w-ag','Generando {NN} notas a los estados financieros: NIC 1–41, NIIF 1–16 {PYMEN}.'],
- ['a42','[Agente 4.2]','w-ag','Control de calidad: {CHK} verificaciones ejecutadas sin excepciones.'],
+ ['a42','[Agente 4.2]','w-ag','Control de calidad: {CHK}.'],
  ['a43','[Agente 4.3]','w-ag','Empaquetado iXBRL completado. Documento completo disponible para impresión y descarga (instancia XBRL).']
 ];
 async function runAll(){
@@ -876,15 +878,19 @@ async function runAll(){
      PYMEN:MODE==='full'?'(NIC 1–41 y NIIF 1–16)':'(Secciones PYMES)',
      NE:EST.length,NN:NOTES().length,LAST:MODE==='full'?'[710000]':'[650000]',
      ENT:$('#entNombre').value,FECHA:$('#entFecha').value,CUR:$('#entMoneda').value||'USD',
-     GR:money(R.gross),OP:money(R.op),UAI:money(R.pbt),P:money(R.profit),OCI:money(R.ociNet),EPS:R.eps.toFixed(2),CHK:9};
+     GR:money(R.gross),OP:money(R.op),UAI:money(R.pbt),P:money(R.profit),OCI:money(R.ociNet),EPS:R.eps.toFixed(2)};
     let i=0;
     for(const [id,who,cls,msg] of stepsBase){
       setStatus(id,'run');ceoSay('<span class="spin"></span>'+who+' trabajando…');
+      if(id==='a42'){
+        const qa=renderChecks(facts().length,NOTES().length);
+        map.CHK=`${qa.passed}/${qa.total} aprobadas${qa.failed?`; ${qa.failed} con observaciones`:' sin excepciones'}`;
+        $('#btnDown').disabled=false;
+      }
       log(who,cls,msg.replace(/\{(\w+)\}/g,(m,k)=>map[k]??k));
       if(id==='a41'){renderAllStatements();}
       if(id==='a44'){renderAllNotes();}
       if(id==='a32'){renderXBRL();}
-      if(id==='a42'){renderChecks(facts().length,NOTES().length);$('#btnDown').disabled=false;}
       if(id==='a43'){buildDoc();}
       await sleep(620+Math.random()*320);
       setStatus(id,'ok');i++;setPct(i/stepsBase.length*100);
