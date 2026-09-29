@@ -30,6 +30,7 @@ select{background:var(--panel2);color:var(--txt);border:1px solid var(--line);bo
 .agent{display:flex;gap:9px;align-items:flex-start;padding:6px 8px;border-radius:9px;transition:.3s;border:1px solid transparent}
 .agent.run{background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.35)}
 .agent.ok{background:rgba(52,211,153,.06);border-color:rgba(52,211,153,.25)}
+.agent.error{background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.45)}
 .dot{width:9px;height:9px;border-radius:50%;background:#3a4a75;margin-top:4px;flex:none;transition:.3s}
 .agent.run .dot{background:var(--am);animation:pulse 1s infinite}
 .agent.ok .dot{background:var(--gn)}
@@ -242,7 +243,7 @@ table.tags td.e{font-family:'JetBrains Mono',monospace;color:var(--cy);font-size
           <div class="grid2">
             <div class="field"><label>Capital emitido</label><input type="number" id="pCap" value="10000"></div>
             <div class="field"><label>Prima de emisión</label><input type="number" id="pPri" value="4000"></div>
-            <div class="field"><label>Ganancias acumuladas al inicio</label><input type="number" id="pIni" value="10000"></div>
+            <div class="field"><label>Ganancias acumuladas al inicio</label><input type="number" id="pIni" value="10576"></div>
             <div class="field"><label>Provisiones no corrientes</label><input type="number" id="pPnc" value="800"></div>
             <div class="field"><label>Pasivos financieros no corrientes</label><input type="number" id="pFnc" value="9000"></div>
             <div class="field"><label>Pasivos por impuestos diferidos</label><input type="number" id="pDtl" value="1300"></div>
@@ -337,7 +338,7 @@ const $=s=>document.querySelector(s);
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const NF=new Intl.NumberFormat('es-ES',{maximumFractionDigits:2});
 const money=n=>(n<0?'(':'')+NF.format(Math.round(n*100)/100)+(n<0?')':'');
-const g=id=>parseFloat((document.getElementById(id)||{}).value)||0;
+const g=id=>parseFloat((document.getElementById(id.replace(/^#/,''))||{}).value)||0;
 const RF=(full,pyme)=>MODE==='full'?full:pyme;
 
 function showTab(t){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.t===t));document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active',p.id==='pane-'+t));}
@@ -837,8 +838,9 @@ function renderChecks(nTags,nNotes){
    [nNotes>=30,`Notas generadas: ${nNotes} notas del catálogo [800500]`,'Incluye notas «no aplica» justificadas'],
    [true,'Bloques taxonómicos verificados','[210000] [220000] [310000] [320000] [410000] [420000] [510000] [520000] [610000] '+ (MODE==='full'?'[710000]':'[650000]')],
    [true,'Marco normativo confirmado',MODE==='full'?'NIIF Completas · Taxonomía NIIF 2024':'NIIF para las PYMES · Secciones 1–35']];
-  $('#valOut').innerHTML=`<span class="tag">Agente 4.2 · Control de Calidad</span><div style="margin-top:10px">`+
-   checks.map?'':''+checksHTML(list);
+  const passed=list.filter(c=>c[0]).length,failed=list.length-passed;
+  $('#valOut').innerHTML=`<span class="tag">Agente 4.2 · Control de Calidad</span><div style="margin:10px 0;color:${failed?'var(--am)':'var(--gn)'};font-weight:700">${passed}/${list.length} verificaciones aprobadas${failed?` · ${failed} con observaciones`:' · sin excepciones'}</div>${checksHTML(list)}`;
+  return {total:list.length,passed,failed};
 }
 function checksHTML(list){return list.map(c=>`<div class="check"><div class="badge ${c[0]?'ok':''}">${c[0]?'✓':'✗'}</div><div><b style="font-size:12.5px">${c[1]}</b><div style="color:var(--mut);font-size:11px" class="mono">${c[2]}</div></div></div>`).join('');}
 
@@ -859,42 +861,61 @@ const stepsBase=[
  ['sa4','[SA-4 Reporte]','w-sa','Ensamblando el paquete de reporte…'],
  ['a41','[Agente 4.1]','w-ag','Generando {NE} estados financieros: [210000] [220000] [310000] [320000] [410000] [420000] [510000] [520000] [610000] {LAST}.'],
  ['a44','[Agente 4.4]','w-ag','Generando {NN} notas a los estados financieros: NIC 1–41, NIIF 1–16 {PYMEN}.'],
- ['a42','[Agente 4.2]','w-ag','Control de calidad: {CHK} verificaciones ejecutadas sin excepciones.'],
+ ['a42','[Agente 4.2]','w-ag','Control de calidad: {CHK}.'],
  ['a43','[Agente 4.3]','w-ag','Empaquetado iXBRL completado. Documento completo disponible para impresión y descarga (instancia XBRL).']
 ];
 async function runAll(){
-  const btn=$('#btnRun');btn.disabled=true;
-  document.querySelectorAll('.agent').forEach(a=>a.classList.remove('run','ok'));
+  const btn=$('#btnRun');
+  if(btn.disabled)return;
+  btn.disabled=true;
+  document.querySelectorAll('.agent').forEach(a=>a.classList.remove('run','ok','error'));
   showTab('pipeline');const C=$('#console');C.innerHTML='';
-  R=compute();renderChips();
-  log('[CEO]','w-ceo','Sesión ejecutiva iniciada. Objetivo: generar el juego completo de estados financieros y notas según '+(MODE==='full'?'las Normas NIIF Completas':'la NIIF para las PYMES')+'. Despliegue de 5 súper-agentes y 13 agentes. Autorizado ✓');
-  const map={FRAME:MODE==='full'?'NIIF Completas':'NIIF para las PYMES',
-   PYME:MODE==='full'?'Modo NIIF para las PYMES en espera (marco activo: NIIF Completas). Catálogo PYME cargado y disponible.':'Modo PYME activo: Secciones 1–35 aplicadas; estado [650000] y notas PYMES habilitadas.',
-   PYMEN:MODE==='full'?'(NIC 1–41 y NIIF 1–16)':'(Secciones PYMES)',
-   NE:EST.length,NN:NOTES().length,LAST:MODE==='full'?'[710000]':'[650000]',
-   ENT:$('#entNombre').value,FECHA:$('#entFecha').value,CUR:$('#entMoneda').value||'USD',
-   GR:money(R.gross),OP:money(R.op),UAI:money(R.pbt),P:money(R.profit),OCI:money(R.ociNet),EPS:R.eps.toFixed(2),CHK:9};
-  let i=0;
-  for(const [id,who,cls,msg] of stepsBase){
-    setStatus(id,'run');ceoSay('<span class="spin"></span>'+who+' trabajando…');
-    log(who,cls,msg.replace(/\{(\w+)\}/g,(m,k)=>map[k]??k));
-    if(id==='a41'){renderAllStatements();}
-    if(id==='a44'){renderAllNotes();}
-    if(id==='a32'){renderXBRL();}
-    if(id==='a42'){renderChecks(facts().length,NOTES().length);$('#btnDown').disabled=false;}
-    if(id==='a43'){buildDoc();}
-    await sleep(620+Math.random()*320);
-    setStatus(id,'ok');i++;setPct(i/stepsBase.length*100);
+  try{
+    R=compute();renderChips();
+    log('[CEO]','w-ceo','Sesión ejecutiva iniciada. Objetivo: generar el juego completo de estados financieros y notas según '+(MODE==='full'?'las Normas NIIF Completas':'la NIIF para las PYMES')+'. Despliegue de 5 súper-agentes y 13 agentes. Autorizado ✓');
+    const map={FRAME:MODE==='full'?'NIIF Completas':'NIIF para las PYMES',
+     PYME:MODE==='full'?'Modo NIIF para las PYMES en espera (marco activo: NIIF Completas). Catálogo PYME cargado y disponible.':'Modo PYME activo: Secciones 1–35 aplicadas; estado [650000] y notas PYMES habilitadas.',
+     PYMEN:MODE==='full'?'(NIC 1–41 y NIIF 1–16)':'(Secciones PYMES)',
+     NE:EST.length,NN:NOTES().length,LAST:MODE==='full'?'[710000]':'[650000]',
+     ENT:$('#entNombre').value,FECHA:$('#entFecha').value,CUR:$('#entMoneda').value||'USD',
+     GR:money(R.gross),OP:money(R.op),UAI:money(R.pbt),P:money(R.profit),OCI:money(R.ociNet),EPS:R.eps.toFixed(2)};
+    let i=0;
+    for(const [id,who,cls,msg] of stepsBase){
+      setStatus(id,'run');ceoSay('<span class="spin"></span>'+who+' trabajando…');
+      if(id==='a42'){
+        const qa=renderChecks(facts().length,NOTES().length);
+        map.CHK=`${qa.passed}/${qa.total} aprobadas${qa.failed?`; ${qa.failed} con observaciones`:' sin excepciones'}`;
+        $('#btnDown').disabled=false;
+      }
+      log(who,cls,msg.replace(/\{(\w+)\}/g,(m,k)=>map[k]??k));
+      if(id==='a41'){renderAllStatements();}
+      if(id==='a44'){renderAllNotes();}
+      if(id==='a32'){renderXBRL();}
+      if(id==='a43'){buildDoc();}
+      await sleep(620+Math.random()*320);
+      setStatus(id,'ok');i++;setPct(i/stepsBase.length*100);
+    }
+    log('[CEO]','w-ceo','Reporte financiero digital completo: '+EST.length+' estados + '+NOTES().length+' notas + instancia XBRL ('+facts().length+' hechos). Ver pestañas ③–⑦.');
+    ceoSay('✅ Generación completada. Reporte publicado.');
+    GEN=true;renderChips();showTab('ef');
+  }catch(error){
+    const active=document.querySelector('.agent.run');
+    if(active){active.classList.remove('run');active.classList.add('error');}
+    const line=document.createElement('div');line.className='ln';
+    const who=document.createElement('span');who.className='who w-sys';who.textContent='[ERROR]';
+    const detail=document.createElement('span');detail.textContent='Pipeline detenido: '+(error&&error.message?error.message:String(error));
+    line.append(who,detail);C.appendChild(line);C.scrollTop=C.scrollHeight;
+    ceoSay('❌ Error en la generación. Consulte el detalle en la consola.');
+    GEN=false;console.error('Error en el pipeline financiero:',error);
+  }finally{
+    btn.disabled=false;
   }
-  log('[CEO]','w-ceo','Reporte financiero digital completo: '+EST.length+' estados + '+NOTES().length+' notas + instancia XBRL ('+facts().length+' hechos). Ver pestañas ③–⑦.');
-  ceoSay('✅ Generación completada. Reporte publicado.');
-  GEN=true;renderChips();showTab('ef');btn.disabled=false;
 }
 function log(who,cls,msg){const c=$('#console');const d=document.createElement('div');d.className='ln';d.innerHTML=`<span class="who ${cls}">${who}</span><span>${msg}</span>`;c.appendChild(d);c.scrollTop=c.scrollHeight;}
 function setStatus(id,st){const el=document.getElementById(id);if(!el)return;el.classList.remove('run','ok');if(st!=='idle')el.classList.add(st);}
 function setPct(p){$('#bar').style.width=p+'%';$('#pct').textContent=Math.round(p)+'%';}
 function ceoSay(t){$('#ceoMsg').innerHTML=t;}
-function resetAll(){document.querySelectorAll('.agent').forEach(a=>a.classList.remove('run','ok'));setPct(0);ceoSay('En espera de instrucciones…');
+function resetAll(){document.querySelectorAll('.agent').forEach(a=>a.classList.remove('run','ok','error'));setPct(0);ceoSay('En espera de instrucciones…');
  $('#console').innerHTML='<div class="ln"><span class="who w-sys">[SISTEMA]</span><span>Sistema reiniciado.</span></div>';
  $('#estViewer').innerHTML='<div class="empty">Seleccione un estado financiero del catálogo para generarlo.</div>';
  $('#notViewer').innerHTML='<div class="empty">Seleccione una nota del catálogo para generarla.</div>';
