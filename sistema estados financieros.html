@@ -840,7 +840,7 @@ function renderNoteBox(n){
   const [code,norm,titulo,fn]=n;const b=fn();
   const rows=b.na?`<p class="nt"><i>${b.intro[0]}</i></p>`:
    (b.intro?`<p class="nt">${b.intro.join(' ')}</p>`:'')+
-   `<table class="fin">${b.rows.map(r=>`<tr><td>${r[0]}<span class="chiptag">ifrs-full:${r[2]}</span></td><td class="n">${typeof r[1]==='number'?money(r[1]):r[1]}</td><td style="color:var(--mut);font-size:10.5px">${r[3]}</td></tr>`).join('')}</table>`;
+`<table class="fin"><tr><th>Partida</th><th class="n">${Number($('#entFecha').value.slice(0,4))||new Date().getFullYear()}</th><th class="n">Referencia</th></tr>${b.rows.map(r=>`<tr><td>${r[0]}<span class="chiptag">ifrs-full:${r[2]}</span></td><td class="n" data-comparable="${typeof r[1]==='number'}">${typeof r[1]==='number'?money(r[1]):r[1]}</td><td style="color:var(--mut);font-size:10.5px">${r[3]}</td></tr>`).join('')}</table>`;
   return `<div class="notebox"><h4>${code} · ${titulo}${b.na?'<span class="naflag">No aplica</span>':''}</h4><p class="nt" style="color:var(--cy)">${norm}</p>${rows}</div>`;
 }
 const NOTE_EXPERT_GUIDANCE={
@@ -904,7 +904,7 @@ function selectNoteForExplanation(code){
   if(!note){SELECTED_NOTE_CODE='';if($('#explainNoteSelect'))$('#explainNoteSelect').value='';$('#notViewer').innerHTML='<div class="empty">Seleccione una nota del catálogo para generarla.</div>';clearNoteExplainer();setStatus('a45','idle');$('#a45Status').textContent='Listo para explicar';return;}
   SELECTED_NOTE_CODE=code;R=compute();$('#explainNoteSelect').value=code;
   document.querySelectorAll('#notChips .chip').forEach(chip=>chip.classList.toggle('sel',chip.dataset.noteCode===code));
-  $('#notViewer').innerHTML=renderNote(note);clearNoteExplainer(`Nota ${code} seleccionada. Pulsa «Explicar nota» para ver su explicación contextual.`);
+  $('#notViewer').innerHTML=renderNote(note);applyNoteHorizontalAnalysis();clearNoteExplainer(`Nota ${code} seleccionada. Pulsa «Explicar nota» para ver su explicación contextual.`);
   setStatus('a45','idle');$('#a45Status').textContent=`Nota ${code} seleccionada`;
 }
 function onExplanationNoteChange(){
@@ -954,8 +954,64 @@ async function explainSelectedNote(){
     console.error('Error en el Agente 4.5:',error);
   }finally{button.disabled=false;}
 }
-function renderAllStatements(){R=compute();$('#estViewer').innerHTML=EST.map(e=>e.r()).join('');document.querySelectorAll('#estChips .chip').forEach(c=>c.classList.add('gen'));}
-function renderAllNotes(){R=compute();$('#notViewer').innerHTML=NOTES().map(renderNoteBox).join('');document.querySelectorAll('#notChips .chip').forEach(c=>c.classList.add('gen'));}
+function applyHorizontalAnalysis(){
+  const closingDate=$('#entFecha').value;
+  const currentYear=Number(closingDate.slice(0,4))||new Date().getFullYear();
+  const priorYear=currentYear-1;
+  $('#estViewer').querySelectorAll('table.fin').forEach(table=>{
+    const first=table.rows[0];
+    if(!first)return;
+    const label=first.cells[0];
+    if(label&&label.tagName==='TD')label.outerHTML='<th></th>';
+    const header=table.rows[0];
+    if(header.cells.length===2 && header.cells[1].tagName==='TD' && !header.cells[1].textContent.trim()){
+      header.cells[1].outerHTML=`<th class="n">${currentYear}</th>`;
+    }
+    // Add a comparative triplet for every amount column (important for multi-column statements).
+    const headings=[...table.rows[0].cells];
+    headings.slice(1).forEach(cell=>{
+      if(cell.classList.contains('n'))cell.insertAdjacentHTML('afterend',`<th class="n">${priorYear}* estim.</th><th class="n">Var. ${currentYear}-${priorYear}</th><th class="n">Var. %</th>`);
+    });
+    [...table.rows].slice(1).forEach(row=>{
+      const originals=[...row.cells];
+      originals.slice(1).filter(cell=>cell.classList.contains('n')).reverse().forEach(cell=>{
+        const text=cell.textContent.trim();
+        const parsed=Number(text.replace(/[(),\s]/g,'').replace(/[^\d.-]/g,''));
+        if(!Number.isFinite(parsed)||text==='—'){
+          cell.insertAdjacentHTML('afterend','<td class="n">—</td><td class="n">—</td><td class="n">—</td>');return;
+        }
+        const signed=text.includes('(')?-parsed:parsed;
+        const prior=signed*0.9, delta=signed-prior, pct=prior===0?null:(delta/Math.abs(prior))*100;
+        const fmt=n=>`${n<0?'(':''}${money(Math.abs(n))}${n<0?')':''}`;
+        cell.insertAdjacentHTML('afterend',`<td class="n">${fmt(prior)}</td><td class="n">${fmt(delta)}</td><td class="n">${pct===null?'N/A':pct.toFixed(1)+'%'}</td>`);
+      });
+    });
+  });
+  const note=document.createElement('p');note.className='sub';note.textContent=`* Comparativo ${priorYear} ilustrativo (90% del importe ${currentYear}); sustituir por cifras reales del periodo anterior antes de emitir estados financieros.`;$('#estViewer').prepend(note);
+}
+function renderAllStatements(){R=compute();$('#estViewer').innerHTML=EST.map(e=>e.r()).join('');applyHorizontalAnalysis();document.querySelectorAll('#estChips .chip').forEach(c=>c.classList.add('gen'));}
+function applyNoteHorizontalAnalysis(){
+  const year=Number($('#entFecha').value.slice(0,4))||new Date().getFullYear(), priorYear=year-1;
+  $('#notViewer').querySelectorAll('table.fin').forEach(table=>{
+    const head=table.rows[0];
+    if(head && !head.dataset.horizontal){
+      head.cells[1].insertAdjacentHTML('afterend',`<th class="n">${priorYear}* estim.</th><th class="n">Var. ${year}-${priorYear}</th><th class="n">Var. %</th>`);
+      head.dataset.horizontal='true';
+    }
+    [...table.rows].slice(1).forEach(row=>{
+      const amount=row.querySelector('[data-comparable="true"]');
+      if(!amount)return;
+      const raw=Number(amount.textContent.replace(/[(),\s]/g,'').replace(/[^\d.-]/g,''));
+      if(!Number.isFinite(raw))return;
+      const current=amount.textContent.includes('(')?-raw:raw;
+      const prior=current*0.9, delta=current-prior, pct=prior===0?null:delta/Math.abs(prior)*100;
+      const fmt=n=>`${n<0?'(':''}${money(Math.abs(n))}${n<0?')':''}`;
+      amount.insertAdjacentHTML('afterend',`<td class="n">${fmt(prior)}</td><td class="n">${fmt(delta)}</td><td class="n">${pct===null?'N/A':pct.toFixed(1)+'%'}</td>`);
+    });
+  });
+  const notice=document.createElement('p');notice.className='nt';notice.textContent=`* Los comparativos ${priorYear} son ilustrativos (90% del valor ${year}); deben sustituirse por saldos reales antes de emitir los estados financieros.`;$('#notViewer').prepend(notice);
+}
+function renderAllNotes(){R=compute();$('#notViewer').innerHTML=NOTES().map(renderNoteBox).join('');applyNoteHorizontalAnalysis();document.querySelectorAll('#notChips .chip').forEach(c=>c.classList.add('gen'));}
 
 /* ================= XBRL ================= */
 function facts(){
