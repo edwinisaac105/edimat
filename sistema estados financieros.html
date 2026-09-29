@@ -77,6 +77,29 @@ table.fin tr.gr td{padding-left:20px;color:#c6d2f2}
 .chiptag{display:inline-block;font-size:9px;font-family:'JetBrains Mono',monospace;background:#0a1120;border:1px solid var(--line);color:var(--am);border-radius:5px;padding:0 5px;margin-left:5px}
 .notebox{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
 .notebox h4{font-size:13.5px;color:var(--txt)}.notebox .nt{color:var(--mut);font-size:11px;margin:4px 0 8px;line-height:1.5}
+.explainer-card{border-color:rgba(34,211,238,.45);background:linear-gradient(145deg,rgba(19,37,61,.96),var(--panel))}
+.explainer-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.explainer-head h3{font-size:14px;margin-top:3px}
+.explainer-head p{color:var(--mut);font-size:11.5px;line-height:1.5;margin-top:4px;max-width:760px}
+.explainer-status{font-size:10.5px;color:var(--gn);border:1px solid rgba(52,211,153,.3);border-radius:99px;padding:5px 9px;background:rgba(52,211,153,.06)}
+.explainer-controls{display:grid;grid-template-columns:minmax(220px,1.5fr) minmax(180px,1fr) auto;gap:10px;align-items:end;margin-top:13px}
+.explainer-controls .field select{width:100%;font-size:11.5px;padding:9px}
+.explainer-controls .btn{white-space:nowrap}
+.explainer-result{margin-top:12px}
+.explain-report{border:1px solid var(--line);border-radius:12px;padding:14px;background:rgba(5,9,16,.55)}
+.explain-report h3{font-size:14px;margin:4px 0}
+.explain-report .explain-norm{color:var(--cy);font-size:10.5px;font-family:'JetBrains Mono',monospace;margin-bottom:11px}
+.explain-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:9px;margin:10px 0}
+.explain-block{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:11px}
+.explain-block h4{font-size:11.5px;color:var(--cy);margin-bottom:5px}
+.explain-block p{font-size:11.5px;line-height:1.6;color:var(--txt)}
+.explain-source{font-size:10.5px;color:var(--mut);line-height:1.6;margin:8px 0}
+.explain-rows{list-style:none;display:grid;gap:7px;margin:8px 0}
+.explain-rows li{border-left:2px solid var(--vi);padding:7px 9px;background:rgba(167,139,250,.06);border-radius:0 8px 8px 0;font-size:11.5px;line-height:1.5}
+.explain-rows small{display:block;color:var(--mut);font-size:10px;margin-top:3px}
+.explain-note{border:1px solid rgba(251,191,36,.3);background:rgba(251,191,36,.06);border-radius:9px;padding:9px 11px;color:#f5dfaa;font-size:10.5px;line-height:1.6;margin-top:10px}
+.explain-empty{padding:22px 14px}
+@media(max-width:680px){.explainer-controls{grid-template-columns:1fr}.explainer-controls .btn{width:100%}}
 .empty{color:var(--mut);text-align:center;padding:50px 20px;font-size:13px}
 table.tags{width:100%;border-collapse:collapse;font-size:11.5px}
 table.tags td,table.tags th{padding:6px 8px;border-bottom:1px solid #141e3a;text-align:left;vertical-align:top}
@@ -166,6 +189,7 @@ table.tags td.e{font-family:'JetBrains Mono',monospace;color:var(--cy);font-size
       <div class="sagroup">
         <div class="agent" id="a41"><div class="dot"></div><div><b>Agente 4.1</b><span>Generador de estados financieros</span></div></div>
         <div class="agent" id="a44"><div class="dot"></div><div><b>Agente 4.4</b><span>Generador de notas a los EF</span></div></div>
+        <div class="agent" id="a45"><div class="dot"></div><div><b>Agente 4.5 · Explicador experto</b><span>Explica las notas a los EF en lenguaje claro, gerencial o de auditoría</span></div></div>
         <div class="agent" id="a42"><div class="dot"></div><div><b>Agente 4.2</b><span>Control de calidad (auditoría)</span></div></div>
         <div class="agent" id="a43"><div class="dot"></div><div><b>Agente 4.3</b><span>Publicación digital iXBRL</span></div></div>
       </div>
@@ -290,6 +314,36 @@ table.tags td.e{font-family:'JetBrains Mono',monospace;color:var(--cy);font-size
 
     <!-- NOTAS -->
     <section class="pane" id="pane-notas">
+      <div class="card explainer-card" style="margin-bottom:12px">
+        <div class="explainer-head">
+          <div>
+            <span class="tag">Agente 4.5 · Explicador experto de notas a los EF</span>
+            <h3>Entiende qué revela cada nota y por qué importa</h3>
+            <p>Elige una nota del catálogo o selecciónala aquí. El agente explica su propósito, las cifras disponibles, la referencia NIIF y los puntos que conviene revisar.</p>
+          </div>
+          <span class="explainer-status" id="a45Status" role="status">Listo para explicar</span>
+        </div>
+        <div class="explainer-controls">
+          <div class="field">
+            <label for="explainNoteSelect">Nota que quieres entender</label>
+            <select id="explainNoteSelect" onchange="onExplanationNoteChange()">
+              <option value="">Selecciona una nota del catálogo…</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="explainAudience">Enfoque de explicación</label>
+            <select id="explainAudience">
+              <option value="general">Lenguaje sencillo</option>
+              <option value="gerencia">Gerencia</option>
+              <option value="auditoria">Revisión de auditoría</option>
+            </select>
+          </div>
+          <button class="btn btn-run" id="btnExplainNote" onclick="explainSelectedNote()">✨ Explicar nota</button>
+        </div>
+        <div class="explainer-result" id="noteExplainOut" aria-live="polite">
+          <div class="empty explain-empty">Selecciona una nota y pulsa «Explicar nota» para recibir una explicación contextual.</div>
+        </div>
+      </div>
       <div class="catalog card">
         <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
           <span class="tag">Catálogo de notas a los estados financieros [800500] · Lista de notas</span>
@@ -333,16 +387,17 @@ table.tags td.e{font-family:'JetBrains Mono',monospace;color:var(--cy);font-size
 
 <script>
 "use strict";
-let MODE='full', GEN=false;
+let MODE='full', GEN=false, SELECTED_NOTE_CODE='';
 const $=s=>document.querySelector(s);
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const NF=new Intl.NumberFormat('es-ES',{maximumFractionDigits:2});
 const money=n=>(n<0?'(':'')+NF.format(Math.round(n*100)/100)+(n<0?')':'');
+const escapeHtml=value=>String(value??'').replace(/[&<>\"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[char]));
 const g=id=>parseFloat((document.getElementById(id.replace(/^#/,''))||{}).value)||0;
 const RF=(full,pyme)=>MODE==='full'?full:pyme;
 
 function showTab(t){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.t===t));document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active',p.id==='pane-'+t));}
-function setMode(m){MODE=m;GEN=false;$('#kpiMarco').textContent=MODE==='full'?'NIIF Completas':'NIIF para las PYMES';$('#kpiEst').textContent=EST.length;$('#kpiNot').textContent=NOTES().length;renderChips();}
+function setMode(m){MODE=m;GEN=false;SELECTED_NOTE_CODE='';$('#kpiMarco').textContent=MODE==='full'?'NIIF Completas':'NIIF para las PYMES';$('#kpiEst').textContent=EST.length;$('#kpiNot').textContent=NOTES().length;renderChips();$('#notViewer').innerHTML='<div class="empty">Seleccione una nota del catálogo para generarla.</div>';clearNoteExplainer();setStatus('a45','idle');$('#a45Status').textContent='Listo para explicar';}
 
 /* ================= MODELO ================= */
 function compute(){
@@ -768,9 +823,17 @@ function noteHTML(n){
 function renderChips(){
   const est=$('#estChips');est.innerHTML='';
   EST.forEach(e=>{const b=document.createElement('button');b.className='chip'+(GEN?' gen':'');b.innerHTML=`<span class="cd">${e.code} · ${e.norm}</span>${e.n}`;b.onclick=()=>{R=compute();document.querySelectorAll('#estChips .chip').forEach(c=>c.classList.remove('sel'));b.classList.add('sel');$('#estViewer').innerHTML=e.r();};est.appendChild(b);});
+  const notes=NOTES(),noteSelect=$('#explainNoteSelect');
+  if(noteSelect){
+    if(!notes.some(n=>n[0]===SELECTED_NOTE_CODE))SELECTED_NOTE_CODE='';
+    noteSelect.innerHTML='';
+    const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Selecciona una nota del catálogo…';noteSelect.appendChild(placeholder);
+    notes.forEach(n=>{const option=document.createElement('option');option.value=n[0];option.textContent=`${n[0]} · ${n[1]} — ${n[2]}`;noteSelect.appendChild(option);});
+    noteSelect.value=SELECTED_NOTE_CODE;
+  }
   const nc=$('#notChips');nc.innerHTML='';
-  NOTES().forEach(n=>{const b=document.createElement('button');b.className='chip'+(GEN?' gen':'');b.innerHTML=`<span class="cd">${n[0]} · ${n[1]}</span>${n[2]}`;b.onclick=()=>{R=compute();document.querySelectorAll('#notChips .chip').forEach(c=>c.classList.remove('sel'));b.classList.add('sel');$('#notViewer').innerHTML=renderNote(n);};nc.appendChild(b);});
-  $('#kpiEst').textContent=EST.length;$('#kpiNot').textContent=NOTES().length;
+  notes.forEach(n=>{const b=document.createElement('button');b.className='chip'+(GEN?' gen':'')+(n[0]===SELECTED_NOTE_CODE?' sel':'');b.dataset.noteCode=n[0];b.innerHTML=`<span class="cd">${n[0]} · ${n[1]}</span>${n[2]}`;b.onclick=()=>selectNoteForExplanation(n[0]);nc.appendChild(b);});
+  $('#kpiEst').textContent=EST.length;$('#kpiNot').textContent=notes.length;
 }
 function renderNote(n){return renderNoteBox(n);}
 function renderNoteBox(n){
@@ -779,6 +842,117 @@ function renderNoteBox(n){
    (b.intro?`<p class="nt">${b.intro.join(' ')}</p>`:'')+
    `<table class="fin">${b.rows.map(r=>`<tr><td>${r[0]}<span class="chiptag">ifrs-full:${r[2]}</span></td><td class="n">${typeof r[1]==='number'?money(r[1]):r[1]}</td><td style="color:var(--mut);font-size:10.5px">${r[3]}</td></tr>`).join('')}</table>`;
   return `<div class="notebox"><h4>${code} · ${titulo}${b.na?'<span class="naflag">No aplica</span>':''}</h4><p class="nt" style="color:var(--cy)">${norm}</p>${rows}</div>`;
+}
+const NOTE_EXPERT_GUIDANCE={
+ '[110000]':{meaning:'Identifica quién informa, a qué periodo corresponden los estados, en qué moneda se presentan y cómo se redondean las cifras.',why:'Da el contexto necesario para no mezclar cifras de otra entidad, fecha o moneda.',review:'Comprueba que entidad, fecha, moneda y redondeo coincidan con el resto del informe.'},
+ '[810000]':{meaning:'Describe la entidad, su actividad y el marco contable declarado para preparar estos estados.',why:'Ayuda a entender qué negocio se está reportando y bajo qué reglas contables.',review:'Contrasta la declaración de cumplimiento y la descripción de operaciones con la documentación corporativa.'},
+ '[800100]':{meaning:'Desglosa partidas del estado de situación financiera, como activos, capital y ganancias acumuladas.',why:'Permite ver de qué se componen los saldos resumidos en el balance.',review:'Concilia los importes con el estado de situación financiera y sus auxiliares.'},
+ '[800200]':{meaning:'Explica cómo se forman los ingresos, costos y gastos que terminan en el resultado del periodo.',why:'Facilita entender qué rubros impulsan la ganancia o pérdida.',review:'Reconcilia cada rubro con el estado de resultados y verifica su clasificación.'},
+ '[800400]':{meaning:'Informa sobre dividendos reconocidos, dividendos por acción y propuestas posteriores al cierre.',why:'Muestra qué parte del resultado se distribuyó o podría distribuirse a los propietarios.',review:'Comprueba fechas de aprobación, actas y el cálculo por acción.'},
+ '[800610]':{meaning:'Resume las políticas contables materiales: las bases y reglas usadas para medir y presentar partidas.',why:'La misma cifra puede interpretarse distinto según la política aplicada.',review:'Verifica que las políticas describan las prácticas realmente usadas y los cambios del periodo.'},
+ '[861200]':{meaning:'Detalla el capital emitido, las acciones y las reservas que integran el patrimonio.',why:'Ayuda a comprender la estructura de propiedad y los movimientos del capital.',review:'Compara acciones y montos con estatutos, registros societarios y el estado de cambios en el patrimonio.'},
+ '[861000]':{meaning:'Separa los componentes de otro resultado integral y el impuesto relacionado.',why:'Muestra efectos que afectan al patrimonio aunque no formen parte del resultado ordinario del periodo.',review:'Comprueba el tratamiento de cada componente y su impuesto asociado.'},
+ '[880000]':{meaning:'Agrupa información importante que no queda explicada en otras notas.',why:'Completa la lectura de los estados y evita omitir información relevante para sus usuarios.',review:'Evalúa si la información adicional es material y si se entiende junto con los demás estados.'},
+ '[826380]':{meaning:'Explica la política de inventarios y presenta sus saldos, costos, rebajas o garantías relevantes.',why:'Los inventarios pueden afectar el costo de ventas, la liquidez y el valor de los activos.',review:'Concilia el saldo con el mayor, el conteo físico y las pruebas de costo y valor neto realizable.'},
+ '[800300]':{meaning:'Concilia el efectivo y los cambios en pasivos originados por actividades de financiación.',why:'Ayuda a distinguir los movimientos de efectivo de los cambios de deuda que no son efectivo.',review:'Concilia saldos iniciales y finales con bancos, préstamos y el estado de flujos de efectivo.'},
+ '[851100]':{meaning:'Revela operaciones de inversión o financiación que cambiaron activos o pasivos sin mover efectivo en el momento.',why:'Esas operaciones pueden ser importantes aunque no aparezcan como entradas o salidas de caja.',review:'Busca contratos, adquisiciones o arrendamientos que se hayan registrado sin pago inmediato.'},
+ '[811000]':{meaning:'Describe cambios en estimaciones contables y correcciones de errores de periodos anteriores.',why:'Permite distinguir cambios por nueva información de errores que requieren corrección.',review:'Confirma la naturaleza, el periodo afectado y el efecto cuantitativo de cada cambio o corrección.'},
+ '[815000]':{meaning:'Informa hechos ocurridos entre el cierre del periodo y la autorización de los estados.',why:'Algunos sucesos posteriores pueden exigir ajustes o revelar riesgos relevantes.',review:'Confirma la fecha de autorización y evalúa si cada hecho requiere ajuste o revelación.'},
+ '[835110]':{meaning:'Concilia el gasto por impuesto, la ganancia antes de impuestos y los saldos por impuestos diferidos.',why:'Explica la carga fiscal del periodo y diferencias entre contabilidad e impuestos.',review:'Recalcula la tasa efectiva y revisa el soporte de activos y pasivos por impuesto diferido.'},
+ '[822100]':{meaning:'Muestra los movimientos de propiedades, planta y equipo: saldo inicial, adiciones, depreciación y saldo final.',why:'Permite entender inversiones y consumo de activos usados en las operaciones.',review:'Concilia el movimiento con el registro de activos, facturas, bajas y cálculos de depreciación.'},
+ '[834480]':{meaning:'Explica los gastos y obligaciones relacionados con beneficios a empleados y planes definidos.',why:'Estos compromisos pueden afectar resultados y generar obligaciones futuras.',review:'Verifica supuestos actuariales, activos del plan y conciliación del pasivo neto.'},
+ '[831400]':{meaning:'Informa las subvenciones recibidas o reconocidas y las condiciones que deben cumplirse.',why:'Una subvención puede depender de obligaciones que continúan después de recibir el dinero.',review:'Contrasta el reconocimiento con el acuerdo de subvención y confirma el cumplimiento de condiciones.'},
+ '[842000]':{meaning:'Identifica la moneda funcional y explica las diferencias de cambio reconocidas en resultados u ORI.',why:'Las variaciones cambiarias pueden afectar el resultado y el valor de saldos en moneda extranjera.',review:'Confirma moneda funcional, tipos de cambio y clasificación de las diferencias.'},
+ '[836200]':{meaning:'Separa costos por préstamos reconocidos como gasto de los que, si corresponde, se incorporan al costo de un activo.',why:'La capitalización cambia cuándo se reconoce el costo financiero en resultados.',review:'Comprueba qué activos califican, el periodo de capitalización y la tasa aplicada.'},
+ '[818000]':{meaning:'Identifica relaciones, transacciones y saldos con partes relacionadas, incluidos directivos y sociedades vinculadas.',why:'Estas operaciones pueden tener condiciones distintas a las pactadas entre partes independientes.',review:'Completa la identificación de partes relacionadas y confirma montos, términos y saldos pendientes.'},
+ '[825480]':{meaning:'Describe el tipo de estados consolidados, separados o combinados y las entidades incluidas, según el marco activo.',why:'Aclara qué entidades y operaciones están dentro del alcance de las cifras presentadas.',review:'Contrasta el perímetro de reporte y las políticas de consolidación o contabilización de inversiones.'},
+ '[816000]':{meaning:'Evalúa si la entidad opera en una economía hiperinflacionaria y si debe aplicar ajustes específicos.',why:'La hiperinflación puede cambiar de forma significativa la unidad de medida de los estados.',review:'Sustenta la conclusión con indicadores económicos y las circunstancias de la moneda funcional.'},
+ '[838000]':{meaning:'Presenta la ganancia atribuible y el cálculo de la ganancia básica y diluida por acción.',why:'Ayuda a relacionar el resultado atribuible con la cantidad de acciones en circulación.',review:'Recalcula el promedio ponderado de acciones y el numerador usado por acción.'},
+ '[813000]':{meaning:'Determina si se presentan estados financieros intermedios y qué información corresponde a esos periodos.',why:'Los informes intermedios cubren periodos menores al año y pueden requerir revelaciones específicas.',review:'Confirma la duración del periodo y que la conclusión de aplicabilidad sea coherente.'},
+ '[832410]':{meaning:'Explica pérdidas por deterioro y, cuando corresponde, cómo se determina el importe recuperable de una unidad generadora de efectivo.',why:'Un deterioro indica que un activo podría no recuperar su importe en libros mediante uso o venta.',review:'Revisa indicadores de deterioro, proyecciones, tasas de descuento y sensibilidad de los supuestos.'},
+ '[827570]':{meaning:'Concilia provisiones y describe pasivos contingentes, como litigios que aún no se reconocen como obligación cierta.',why:'Ayuda a entender compromisos, incertidumbres y posibles salidas futuras de recursos.',review:'Contrasta los movimientos con expedientes, asesores legales y la mejor estimación disponible.'},
+ '[823180]':{meaning:'Muestra movimientos de activos intangibles, sus adiciones, amortización y saldo final.',why:'Explica el valor de activos no físicos, como software o licencias, y cómo se consume su utilidad.',review:'Comprueba que se cumplan los criterios de reconocimiento y revisa vidas útiles y amortización.'},
+ '[825100]':{meaning:'Explica el reconocimiento y la medición de propiedades mantenidas para obtener rentas o plusvalía.',why:'Estas propiedades pueden medirse de forma distinta a los activos usados en las operaciones.',review:'Confirma el uso del inmueble, la base de medición y el soporte de su valor razonable.'},
+ '[824180]':{meaning:'Determina si existen actividades agrícolas o activos biológicos sujetos a revelaciones específicas.',why:'Los activos biológicos pueden cambiar de valor por transformación o cosecha.',review:'Valida la actividad de la entidad y la clasificación de activos y productos agrícolas.'},
+ '[819100]':{meaning:'Evalúa si la entidad adopta por primera vez el marco NIIF y si debe explicar los efectos de transición.',why:'La transición puede generar conciliaciones entre las reglas anteriores y las NIIF.',review:'Confirma la fecha de transición y las conciliaciones exigidas si la entidad es adoptante por primera vez.'},
+ '[834120]':{meaning:'Explica planes de pagos basados en acciones, opciones concedidas y el gasto reconocido.',why:'La compensación en acciones puede diluir participaciones y generar gastos aunque no implique efectivo inmediato.',review:'Revisa condiciones de los planes, valoración de opciones y periodo de reconocimiento del gasto.'},
+ '[817000]':{meaning:'Resume combinaciones de negocios y la plusvalía reconocida, si la hubo.',why:'Una adquisición puede cambiar el perímetro del grupo y originar importes importantes de plusvalía.',review:'Revisa la fecha de adquisición, asignación del precio y pruebas de deterioro de la plusvalía.'},
+ '[825900]':{meaning:'Determina si hay activos clasificados para la venta o componentes de operaciones discontinuadas.',why:'Su presentación separada ayuda a distinguir activos que se venderán y resultados que no continuarán.',review:'Confirma el plan de venta, disponibilidad inmediata y cumplimiento de los criterios de clasificación.'},
+ '[822200]':{meaning:'Evalúa si la entidad incurre en actividades de exploración y evaluación de recursos minerales.',why:'Esos desembolsos tienen reglas de reconocimiento y deterioro particulares.',review:'Confirma la naturaleza de las actividades y la política aplicada a los desembolsos.'},
+ '[822390]':{meaning:'Describe categorías de instrumentos financieros, exposición a riesgos, deterioro y mediciones a valor razonable.',why:'Permite entender cómo los cambios de crédito, liquidez o mercado podrían afectar a la entidad.',review:'Concilia saldos y revisa metodologías de pérdida esperada, jerarquía de valor razonable y gestión de riesgos.'},
+ '[871100]':{meaning:'Evalúa cómo se identifican los segmentos que la gerencia revisa para asignar recursos y evaluar resultados.',why:'Una cifra consolidada puede ocultar diferencias entre líneas de negocio o zonas geográficas.',review:'Contrasta los segmentos revelados con los informes internos revisados por la máxima autoridad operativa.'},
+ '[825700]':{meaning:'Explica participaciones en asociadas, negocios conjuntos u otras entidades, según el marco aplicado.',why:'Estas inversiones pueden afectar el resultado y los recursos aunque la entidad no las controle por completo.',review:'Verifica porcentajes de participación, método de contabilización y resultados atribuidos.'},
+ '[823000]':{meaning:'Explica cómo se estiman los valores razonables y en qué nivel de la jerarquía se ubican.',why:'Un valor razonable depende de datos observables o de supuestos; el nivel muestra cuánta estimación interviene.',review:'Verifica técnica, datos observables, supuestos significativos y revelación del nivel correspondiente.'},
+ '[831150]':{meaning:'Desglosa ingresos por la forma en que se transfieren bienes o servicios y presenta saldos de contratos.',why:'Ayuda a entender cuándo se reconoce el ingreso y qué obligaciones quedan pendientes con clientes.',review:'Concilia los ingresos con contratos, obligaciones de desempeño y saldos de activos o pasivos contractuales.'},
+ '[832610]':{meaning:'Resume activos por derecho de uso, depreciación, intereses y obligaciones por arrendamientos.',why:'Los arrendamientos pueden representar activos utilizados y pagos futuros comprometidos.',review:'Concilia el pasivo con contratos, pagos, tasas de descuento y plazo de arrendamiento.'},
+ '[650000]':{meaning:'Muestra la ganancia del periodo y cómo se integra con las ganancias acumuladas en la presentación alternativa para PYMES.',why:'Relaciona el resultado anual con el saldo patrimonial que queda acumulado.',review:'Concilia el resultado y las ganancias acumuladas con el estado de situación financiera.'},
+ '[825500]':{meaning:'Evalúa si la entidad mantiene participaciones en negocios conjuntos y qué información debe revelarse.',why:'Los acuerdos conjuntos comparten control y pueden implicar derechos y obligaciones específicos.',review:'Revisa los acuerdos contractuales y la conclusión sobre control conjunto.'},
+ '[825600]':{meaning:'Explica inversiones en asociadas y la participación de la entidad en sus resultados.',why:'Permite ver cómo influye una entidad vinculada sin control sobre la inversión.',review:'Confirma influencia significativa, porcentaje de participación y cálculo del resultado atribuido.'},
+ '[831110]':{meaning:'Desglosa ingresos por ventas de bienes y prestación de servicios bajo el marco para PYMES.',why:'Ayuda a distinguir las fuentes principales de ingreso y las políticas de reconocimiento.',review:'Concilia las categorías con contratos, facturación y política de reconocimiento de ingresos.'},
+ '[831710]':{meaning:'Determina si existen contratos de construcción que requieran información específica.',why:'Estos contratos pueden reconocerse a lo largo del tiempo y dependen de estimaciones de avance y costos.',review:'Confirma contratos vigentes y sustenta el método de medición del avance, si aplica.'}
+};
+const EXPLAIN_AUDIENCES={
+ general:{title:'En palabras sencillas',focus:'Lee los importes como partes de la historia financiera de la entidad; una cifra aislada no muestra por sí sola si el resultado es bueno o malo.'},
+ gerencia:{title:'Lectura para gerencia',focus:'Contrasta estas cifras con presupuesto, periodos anteriores y decisiones aprobadas antes de concluir sobre tendencias.'},
+ auditoria:{title:'Punto de revisión',focus:'Rastrea las cifras hasta los auxiliares, contratos y soportes; esta explicación no sustituye procedimientos ni evidencia de auditoría.'}
+};
+function clearNoteExplainer(message='Selecciona una nota del catálogo y pulsa «Explicar nota».'){
+  const output=$('#noteExplainOut');if(output)output.innerHTML=`<div class="empty explain-empty">${escapeHtml(message)}</div>`;
+}
+function selectNoteForExplanation(code){
+  const note=NOTES().find(item=>item[0]===code);
+  if(!note){SELECTED_NOTE_CODE='';if($('#explainNoteSelect'))$('#explainNoteSelect').value='';$('#notViewer').innerHTML='<div class="empty">Seleccione una nota del catálogo para generarla.</div>';clearNoteExplainer();setStatus('a45','idle');$('#a45Status').textContent='Listo para explicar';return;}
+  SELECTED_NOTE_CODE=code;R=compute();$('#explainNoteSelect').value=code;
+  document.querySelectorAll('#notChips .chip').forEach(chip=>chip.classList.toggle('sel',chip.dataset.noteCode===code));
+  $('#notViewer').innerHTML=renderNote(note);clearNoteExplainer(`Nota ${code} seleccionada. Pulsa «Explicar nota» para ver su explicación contextual.`);
+  setStatus('a45','idle');$('#a45Status').textContent=`Nota ${code} seleccionada`;
+}
+function onExplanationNoteChange(){
+  const code=$('#explainNoteSelect').value;
+  if(code){selectNoteForExplanation(code);return;}
+  SELECTED_NOTE_CODE='';document.querySelectorAll('#notChips .chip').forEach(chip=>chip.classList.remove('sel'));
+  $('#notViewer').innerHTML='<div class="empty">Seleccione una nota del catálogo para generarla.</div>';clearNoteExplainer();
+  setStatus('a45','idle');$('#a45Status').textContent='Listo para explicar';
+}
+function formatExplainerValue(value,label){
+  if(typeof value!=='number')return String(value??'—');
+  const currency=($('#entMoneda').value||'USD').trim()||'USD';
+  if(/acciones|opciones/i.test(label))return `${NF.format(value)} miles de unidades`;
+  if(/por acción/i.test(label))return `${NF.format(value)} ${currency} por acción`;
+  return `${money(value)} ${currency} (miles)`;
+}
+function renderNoteExplanation(note,data,audience){
+  const [code,norm,title]=note,guidance=NOTE_EXPERT_GUIDANCE[code]||{
+    meaning:`Amplía la información sobre «${title}» y detalla los datos o circunstancias relevantes para esta partida.`,
+    why:'Ayuda a entender información que aparece resumida en los estados financieros.',
+    review:'Concilia la nota con los estados principales y revisa los soportes de los importes.'
+  };
+  const profile=EXPLAIN_AUDIENCES[audience]||EXPLAIN_AUDIENCES.general;
+  const isNA=Boolean(data.na);
+  const meaning=isNA?`El catálogo marca esta nota como «No aplica» al periodo. ${data.intro?.join(' ')||''}`:guidance.meaning;
+  const why=isNA?'“No aplica” no significa automáticamente que el saldo sea cero: indica que, según los datos de ejemplo del catálogo, el tema no corresponde. Confirma que esa conclusión aplique a la entidad y al periodo.':guidance.why;
+  const review=isNA?`${guidance.review} Confirma la conclusión con la actividad real de la entidad y la evidencia disponible.`:guidance.review;
+  const source=data.intro?.length?`<p class="explain-source"><b>Contexto de la nota:</b> ${escapeHtml(data.intro.join(' '))}</p>`:'';
+  const rows=!isNA&&data.rows?.length?`<h4 class="tag" style="margin-top:12px">Partidas y cifras de esta nota</h4><ul class="explain-rows">${data.rows.map(row=>`<li><b>${escapeHtml(row[0])}</b>: <strong>${escapeHtml(formatExplainerValue(row[1],row[0]))}</strong><small>${row[2]?`Etiqueta XBRL: ifrs-full:${escapeHtml(row[2])} · `:''}${row[3]?`Referencia: ${escapeHtml(row[3])}`:''}</small></li>`).join('')}</ul><p class="explain-source">Los importes se expresan en miles de ${escapeHtml(($('#entMoneda').value||'USD').trim()||'USD')} salvo acciones, porcentajes o valores por acción.</p>`:'';
+  const naNotice=isNA?'<div class="explain-note"><b>Lectura de «No aplica»:</b> es una conclusión que debe validarse para la entidad y el periodo; no sustituye el análisis de materialidad ni la revisión de hechos y contratos.</div>':'';
+  return `<article class="explain-report"><span class="tag">Agente 4.5 · explicación contextual</span><h3>${escapeHtml(code)} · ${escapeHtml(title)}</h3><p class="explain-norm">${escapeHtml(norm)} · basada en los datos cargados y el catálogo de notas</p><div class="explain-grid"><section class="explain-block"><h4>${escapeHtml(profile.title)} · ¿qué significa?</h4><p>${escapeHtml(meaning)}</p></section><section class="explain-block"><h4>¿Por qué importa?</h4><p>${escapeHtml(why)}</p></section><section class="explain-block"><h4>¿Qué conviene revisar?</h4><p>${escapeHtml(review)} ${escapeHtml(profile.focus)}</p></section></div>${source}${rows}${naNotice}<div class="explain-note"><b>Alcance:</b> explicación orientativa generada en el navegador a partir de esta nota y de los datos introducidos. No consulta libros contables ni evidencia externa y no sustituye asesoría profesional ni una auditoría.</div></article>`;
+}
+async function explainSelectedNote(){
+  const note=NOTES().find(item=>item[0]===SELECTED_NOTE_CODE),button=$('#btnExplainNote');
+  if(!note){$('#a45Status').textContent='Selecciona una nota primero';clearNoteExplainer('Selecciona una nota del catálogo o usa el selector para elegirla.');return;}
+  if(button.disabled)return;
+  const requestedCode=note[0];button.disabled=true;setStatus('a45','run');$('#a45Status').textContent=`Analizando ${requestedCode}…`;
+  $('#noteExplainOut').innerHTML='<div class="empty explain-empty">El Agente 4.5 está preparando una explicación con los datos actuales…</div>';
+  try{
+    R=compute();const data=note[3]();await sleep(220);
+    if(SELECTED_NOTE_CODE!==requestedCode)return;
+    $('#noteExplainOut').innerHTML=renderNoteExplanation(note,data,$('#explainAudience').value);
+    setStatus('a45','ok');$('#a45Status').textContent=`Nota ${requestedCode} explicada`;
+  }catch(error){
+    setStatus('a45','error');$('#a45Status').textContent='No se pudo explicar la nota';
+    $('#noteExplainOut').innerHTML=`<div class="explain-note">Error al preparar la explicación: ${escapeHtml(error&&error.message?error.message:String(error))}</div>`;
+    console.error('Error en el Agente 4.5:',error);
+  }finally{button.disabled=false;}
 }
 function renderAllStatements(){R=compute();$('#estViewer').innerHTML=EST.map(e=>e.r()).join('');document.querySelectorAll('#estChips .chip').forEach(c=>c.classList.add('gen'));}
 function renderAllNotes(){R=compute();$('#notViewer').innerHTML=NOTES().map(renderNoteBox).join('');document.querySelectorAll('#notChips .chip').forEach(c=>c.classList.add('gen'));}
@@ -872,7 +1046,7 @@ async function runAll(){
   showTab('pipeline');const C=$('#console');C.innerHTML='';
   try{
     R=compute();renderChips();
-    log('[CEO]','w-ceo','Sesión ejecutiva iniciada. Objetivo: generar el juego completo de estados financieros y notas según '+(MODE==='full'?'las Normas NIIF Completas':'la NIIF para las PYMES')+'. Despliegue de 5 súper-agentes y 13 agentes. Autorizado ✓');
+    log('[CEO]','w-ceo','Sesión ejecutiva iniciada. Objetivo: generar el juego completo de estados financieros y notas según '+(MODE==='full'?'las Normas NIIF Completas':'la NIIF para las PYMES')+'. Despliegue de 5 súper-agentes y 13 agentes de proceso. Agente 4.5 disponible bajo demanda para explicar notas. Autorizado ✓');
     const map={FRAME:MODE==='full'?'NIIF Completas':'NIIF para las PYMES',
      PYME:MODE==='full'?'Modo NIIF para las PYMES en espera (marco activo: NIIF Completas). Catálogo PYME cargado y disponible.':'Modo PYME activo: Secciones 1–35 aplicadas; estado [650000] y notas PYMES habilitadas.',
      PYMEN:MODE==='full'?'(NIC 1–41 y NIIF 1–16)':'(Secciones PYMES)',
@@ -912,7 +1086,7 @@ async function runAll(){
   }
 }
 function log(who,cls,msg){const c=$('#console');const d=document.createElement('div');d.className='ln';d.innerHTML=`<span class="who ${cls}">${who}</span><span>${msg}</span>`;c.appendChild(d);c.scrollTop=c.scrollHeight;}
-function setStatus(id,st){const el=document.getElementById(id);if(!el)return;el.classList.remove('run','ok');if(st!=='idle')el.classList.add(st);}
+function setStatus(id,st){const el=document.getElementById(id);if(!el)return;el.classList.remove('run','ok','error');if(st!=='idle')el.classList.add(st);}
 function setPct(p){$('#bar').style.width=p+'%';$('#pct').textContent=Math.round(p)+'%';}
 function ceoSay(t){$('#ceoMsg').innerHTML=t;}
 function resetAll(){document.querySelectorAll('.agent').forEach(a=>a.classList.remove('run','ok','error'));setPct(0);ceoSay('En espera de instrucciones…');
@@ -922,7 +1096,7 @@ function resetAll(){document.querySelectorAll('.agent').forEach(a=>a.classList.r
  $('#docOut').innerHTML='<div class="empty">Pulse «Construir documento» para ensamblar el reporte completo.</div>';
  $('#tagOut').innerHTML='<div class="empty">El etiquetado XBRL se generará durante el pipeline.</div>';
  $('#valOut').innerHTML='<div class="empty">El Agente 4.2 ejecutará las verificaciones al finalizar el pipeline.</div>';
- $('#btnDown').disabled=true;GEN=false;R=compute();renderChips();showTab('datos');}
+ $('#btnDown').disabled=true;GEN=false;SELECTED_NOTE_CODE='';R=compute();renderChips();clearNoteExplainer();$('#a45Status').textContent='Listo para explicar';showTab('datos');}
 renderChips();
 </script>
 </body>
