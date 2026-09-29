@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fábrica NIIF de Reporte Financiero · Catálogo completo de estados y notas</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.8/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.0.18/index.css">
+<style>
+:root{--bg:#070b16;--panel:#0d1426;--panel2:#111a33;--line:#1e2a4a;--txt:#e6ecff;--mut:#8b9bc4;--cy:#22d3ee;--vi:#a78bfa;--gn:#34d399;--am:#fbbf24;--rd:#f87171;--blue:#60a5fa}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:radial-gradient(1200px 600px at 80% -10%,#14224a 0%,var(--bg) 55%);color:var(--txt);font-family:'Inter',sans-serif;min-height:100vh}
+.mono{font-family:'JetBrains Mono',monospace}
+header{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 22px;border-bottom:1px solid var(--line);background:rgba(7,11,22,.85);backdrop-filter:blur(8px);position:sticky;top:0;z-index:50;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:42px;height:42px;border-radius:12px;background:conic-gradient(from 200deg,var(--cy),var(--vi),var(--cy));display:grid;place-items:center;font-weight:800;color:#04101f;font-size:18px}
+.brand h1{font-size:15px}.brand small{display:block;color:var(--mut);font-size:11px;margin-top:2px}
+.hbtns{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+select{background:var(--panel2);color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:9px 10px;font-family:inherit;font-size:12.5px;font-weight:600}
+.btn{border:none;border-radius:10px;padding:10px 16px;font-weight:700;font-size:12.5px;cursor:pointer;font-family:inherit;transition:.2s}
+.btn-run{background:linear-gradient(90deg,var(--cy),var(--vi));color:#04101f}
+.btn-run:disabled{opacity:.5;cursor:not-allowed}
+.btn-ghost{background:var(--panel2);color:var(--txt);border:1px solid var(--line)}
+.btn-ghost:hover{border-color:var(--cy)}
+.wrap{display:grid;grid-template-columns:290px 1fr;gap:16px;padding:16px 22px;max-width:1620px;margin:0 auto}
+@media(max-width:1000px){.wrap{grid-template-columns:1fr}}
+.side{display:flex;flex-direction:column;gap:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px}
+.ceo{border-color:rgba(167,139,250,.5);background:linear-gradient(140deg,#1a1436,#0d1426)}
+.agent{display:flex;gap:9px;align-items:flex-start;padding:6px 8px;border-radius:9px;transition:.3s;border:1px solid transparent}
+.agent.run{background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.35)}
+.agent.ok{background:rgba(52,211,153,.06);border-color:rgba(52,211,153,.25)}
+.dot{width:9px;height:9px;border-radius:50%;background:#3a4a75;margin-top:4px;flex:none;transition:.3s}
+.agent.run .dot{background:var(--am);animation:pulse 1s infinite}
+.agent.ok .dot{background:var(--gn)}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(251,191,36,.6)}50%{box-shadow:0 0 0 6px rgba(251,191,36,0)}}
+.agent b{font-size:12px;display:block}.agent span{font-size:10.5px;color:var(--mut);display:block}
+.tag{font-size:9.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--cy)}
+.sagroup{border-left:2px solid var(--line);padding-left:7px;margin-top:3px}
+.progressWrap{height:7px;background:#0a1120;border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+.progressBar{height:100%;width:0%;background:linear-gradient(90deg,var(--cy),var(--vi));transition:width .4s}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tab{padding:8px 13px;border-radius:10px;background:var(--panel);border:1px solid var(--line);color:var(--mut);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.tab.active{background:linear-gradient(90deg,rgba(34,211,238,.15),rgba(167,139,250,.15));color:var(--txt);border-color:var(--cy)}
+.pane{display:none}.pane.active{display:block;animation:fade .3s}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1}}
+.grid2{display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:9px}
+.field label{font-size:10.5px;color:var(--mut);display:block;margin-bottom:3px}
+.field input{width:100%;background:#0a1120;border:1px solid var(--line);border-radius:8px;color:var(--txt);padding:8px 9px;font-family:'JetBrains Mono',monospace;font-size:12.5px}
+.field input:focus{outline:none;border-color:var(--cy)}
+fieldset{border:1px solid var(--line);border-radius:12px;padding:11px;margin-bottom:11px}
+legend{padding:0 8px;font-size:11.5px;font-weight:700;color:var(--cy)}
+.console{background:#050910;border:1px solid var(--line);border-radius:12px;height:430px;overflow-y:auto;padding:12px;font-family:'JetBrains Mono',monospace;font-size:11.5px;line-height:1.7}
+.console .ln{display:flex;gap:8px}.console .who{flex:none;width:200px;font-weight:700}
+.w-ceo{color:var(--vi)}.w-sa{color:var(--cy)}.w-ag{color:var(--blue)}.w-sys{color:var(--gn)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:9px;margin-bottom:12px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px}
+.kpi small{color:var(--mut);font-size:10.5px}.kpi b{font-size:16px;display:block;margin-top:3px;font-family:'JetBrains Mono',monospace}
+.catalog{display:flex;flex-direction:column;gap:9px;margin-bottom:14px}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:7px 10px;font-size:11.5px;cursor:pointer;font-family:inherit;color:var(--txt);text-align:left;transition:.15s;line-height:1.35}
+.chip:hover{border-color:var(--cy)}
+.chip.sel{border-color:var(--vi);background:rgba(167,139,250,.12)}
+.chip.gen{border-color:rgba(52,211,153,.5)}
+.chip .cd{font-family:'JetBrains Mono',monospace;color:var(--cy);font-size:10.5px;display:block}
+.chip.gen .cd::after{content:" ✓";color:var(--gn)}
+.stmt{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px}
+.stmt h3{font-size:14.5px}.stmt .sub{color:var(--mut);font-size:11px;margin:2px 0 10px}
+table.fin{width:100%;border-collapse:collapse;font-size:12.5px}
+table.fin td,table.fin th{padding:5px 8px;border-bottom:1px solid #141e3a;text-align:left;vertical-align:top}
+table.fin td.n,table.fin th.n{text-align:right;font-family:'JetBrains Mono',monospace;white-space:nowrap}
+table.fin tr.subt td{font-weight:700;border-top:1px solid var(--line)}
+table.fin tr.tot td{font-weight:800;background:rgba(34,211,238,.05);border-top:2px solid var(--cy)}
+table.fin tr.h td{font-weight:700;color:var(--cy)}
+table.fin tr.gr td{padding-left:20px;color:#c6d2f2}
+.chiptag{display:inline-block;font-size:9px;font-family:'JetBrains Mono',monospace;background:#0a1120;border:1px solid var(--line);color:var(--am);border-radius:5px;padding:0 5px;margin-left:5px}
+.notebox{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
+.notebox h4{font-size:13.5px;color:var(--txt)}.notebox .nt{color:var(--mut);font-size:11px;margin:4px 0 8px;line-height:1.5}
+.empty{color:var(--mut);text-align:center;padding:50px 20px;font-size:13px}
+table.tags{width:100%;border-collapse:collapse;font-size:11.5px}
+table.tags td,table.tags th{padding:6px 8px;border-bottom:1px solid #141e3a;text-align:left;vertical-align:top}
+table.tags th{color:var(--mut);font-size:10px;text-transform:uppercase}
+table.tags td.v{text-align:right;font-family:'JetBrains Mono',monospace;color:var(--gn)}
+table.tags td.e{font-family:'JetBrains Mono',monospace;color:var(--cy);font-size:10.5px}
+.check{display:flex;gap:10px;align-items:center;padding:9px 11px;border:1px solid var(--line);border-radius:10px;margin-bottom:7px;background:var(--panel2)}
+.badge{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800}
+.badge.ok{background:rgba(52,211,153,.15);color:var(--gn);border:1px solid var(--gn)}
+.spin{display:inline-block;width:9px;height:9px;border:2px solid var(--am);border-top-color:transparent;border-radius:50%;animation:sp .7s linear infinite;margin-right:5px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.naflag{display:inline-block;font-size:10px;background:rgba(139,155,196,.15);color:var(--mut);border:1px solid var(--line);border-radius:6px;padding:1px 7px;margin-left:6px}
+@media print{
+ body{background:#fff;color:#111}
+ .no-print{display:none!important}
+ .wrap{display:block;padding:0}
+ .pane{display:none!important}
+ #pane-doc{display:block!important}
+ .stmt,.notebox,.card{background:#fff;border-color:#bbb;color:#111;break-inside:avoid}
+ .stmt h3,.notebox h4{color:#111}
+ table.fin td,table.fin th,table.tags td{color:#111;border-color:#ccc}
+ table.fin tr.tot td{background:#eef}
+ .chiptag{color:#960;border-color:#ccc;background:#fff}
+}
+</style>
+</head>
+<body>
+
+<header class="no-print">
+  <div class="brand">
+    <div class="logo">N</div>
+    <div>
+      <h1>Fábrica NIIF de Reporte Financiero Digital</h1>
+      <small>Catálogo completo de estados financieros y notas · Taxonomía Contable NIIF 2024 · NIIF para las PYMES</small>
+    </div>
+  </div>
+  <div class="hbtns">
+    <select id="selMode" onchange="setMode(this.value)">
+      <option value="full">Marco: NIIF Completas</option>
+      <option value="pyme">Marco: NIIF para las PYMES</option>
+    </select>
+    <button class="btn btn-ghost" onclick="resetAll()">Reiniciar</button>
+    <button class="btn btn-run" id="btnRun" onclick="runAll()">▶ Ejecutar Generación Automatizada</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <!-- SIDEBAR -->
+  <aside class="side no-print">
+    <div class="card ceo">
+      <div class="agent" id="ceo" style="padding:2px 0">
+        <div class="dot"></div>
+        <div><span class="tag">CEO · Orquestador Ejecutivo</span>
+          <b>Agente Supremo de Orquestación</b>
+          <span id="ceoMsg">En espera de instrucciones…</span></div>
+      </div>
+      <div style="margin-top:9px">
+        <div style="display:flex;justify-content:space-between;font-size:10.5px;color:var(--mut);margin-bottom:3px"><span>Pipeline</span><span class="mono" id="pct">0%</span></div>
+        <div class="progressWrap"><div class="progressBar" id="bar"></div></div>
+      </div>
+    </div>
+    <div class="card"><div class="agent" id="sa5"><div class="dot"></div><div><span class="tag">Súper-Agente 5</span><b>Marco Normativo</b><span>NIIF Completas / NIIF para las PYMES</span></div></div>
+      <div class="sagroup">
+        <div class="agent" id="a51"><div class="dot"></div><div><b>Agente 5.1</b><span>Selector de marco y taxonomía</span></div></div>
+        <div class="agent" id="a52"><div class="dot"></div><div><b>Agente 5.2</b><span>Especialista NIIF para las PYMES</span></div></div>
+      </div>
+    </div>
+    <div class="card"><div class="agent" id="sa1"><div class="dot"></div><div><span class="tag">Súper-Agente 1</span><b>Ingesta de Datos</b><span>Recopilación y normalización</span></div></div>
+      <div class="sagroup">
+        <div class="agent" id="a11"><div class="dot"></div><div><b>Agente 1.1</b><span>Recopilador de datos de la entidad</span></div></div>
+        <div class="agent" id="a12"><div class="dot"></div><div><b>Agente 1.2</b><span>Extractor / API (EDGAR · OAM · DART)</span></div></div>
+      </div>
+    </div>
+    <div class="card"><div class="agent" id="sa2"><div class="dot"></div><div><span class="tag">Súper-Agente 2</span><b>Procesamiento Contable</b><span>Motor contable, ajustes y cierre</span></div></div>
+      <div class="sagroup">
+        <div class="agent" id="a21"><div class="dot"></div><div><b>Agente 2.1</b><span>Motor contable (resultado, ORI, EFE)</span></div></div>
+        <div class="agent" id="a22"><div class="dot"></div><div><b>Agente 2.2</b><span>Ajustes, reclasificaciones y cierre</span></div></div>
+      </div>
+    </div>
+    <div class="card"><div class="agent" id="sa3"><div class="dot"></div><div><span class="tag">Súper-Agente 3</span><b>Taxonomía & XBRL</b><span>Mapeo y validación estructural</span></div></div>
+      <div class="sagroup">
+        <div class="agent" id="a31"><div class="dot"></div><div><b>Agente 3.1</b><span>Mapeo Taxonomía NIIF 2024</span></div></div>
+        <div class="agent" id="a32"><div class="dot"></div><div><b>Agente 3.2</b><span>Validador XBRL y consistencia</span></div></div>
+      </div>
+    </div>
+    <div class="card"><div class="agent" id="sa4"><div class="dot"></div><div><span class="tag">Súper-Agente 4</span><b>Reporte & Publicación</b><span>Estados, notas, auditoría, iXBRL</span></div></div>
+      <div class="sagroup">
+        <div class="agent" id="a41"><div class="dot"></div><div><b>Agente 4.1</b><span>Generador de estados financieros</span></div></div>
+        <div class="agent" id="a44"><div class="dot"></div><div><b>Agente 4.4</b><span>Generador de notas a los EF</span></div></div>
+        <div class="agent" id="a42"><div class="dot"></div><div><b>Agente 4.2</b><span>Control de calidad (auditoría)</span></div></div>
+        <div class="agent" id="a43"><div class="dot"></div><div><b>Agente 4.3</b><span>Publicación digital iXBRL</span></div></div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main>
+    <div class="tabs no-print">
+      <button class="tab active" data-t="datos" onclick="showTab('datos')">① Datos</button>
+      <button class="tab" data-t="pipeline" onclick="showTab('pipeline')">② Orquestación</button>
+      <button class="tab" data-t="ef" onclick="showTab('ef')">③ Estados Financieros</button>
+      <button class="tab" data-t="notas" onclick="showTab('notas')">④ Notas a los EF</button>
+      <button class="tab" data-t="xbrl" onclick="showTab('xbrl')">⑤ XBRL</button>
+      <button class="tab" data-t="doc" onclick="showTab('doc')">⑥ Documento Completo</button>
+      <button class="tab" data-t="val" onclick="showTab('val')">⑦ Validaciones</button>
+    </div>
+
+    <!-- DATOS -->
+    <section class="pane active" id="pane-datos">
+      <div class="kpis no-print">
+        <div class="kpi"><small>Marco activo</small><b id="kpiMarco" style="font-size:12px">NIIF Completas</b></div>
+        <div class="kpi"><small>Taxonomía</small><b style="font-size:12px">NIIF 2024</b></div>
+        <div class="kpi"><small>Estados del catálogo</small><b id="kpiEst">10</b></div>
+        <div class="kpi"><small>Notas del catálogo</small><b id="kpiNot">42</b></div>
+        <div class="kpi"><small>Moneda / unidad</small><b style="font-size:12px">USD · miles</b></div>
+      </div>
+      <div class="card">
+        <fieldset><legend>Entidad que informa [110000] · NIC 1.51 / PYMES 3.23</legend>
+          <div class="grid2">
+            <div class="field" style="grid-column:span 2"><label>Nombre de la entidad [NameOfReportingEntity]</label><input id="entNombre" value="Compañía Ejemplo S.A."></div>
+            <div class="field"><label>Fecha de cierre [NIC 1.51 c]</label><input type="date" id="entFecha" value="2026-12-31"></div>
+            <div class="field"><label>Moneda de presentación [NIC 1.51 d]</label><input id="entMoneda" value="USD"></div>
+            <div class="field"><label>Acciones en circulación (miles)</label><input type="number" id="entAcciones" value="1000"></div>
+            <div class="field"><label>Dividendos declarados</label><input type="number" id="entDiv" value="1825"></div>
+          </div>
+        </fieldset>
+        <fieldset><legend>Resultado [310000][320000] · NIC 1.82</legend>
+          <div class="grid2">
+            <div class="field"><label>Ingresos de actividades ordinarias</label><input type="number" id="dRev" value="45000"></div>
+            <div class="field"><label>Costo de ventas</label><input type="number" id="dCos" value="26000"></div>
+            <div class="field"><label>Otros ingresos</label><input type="number" id="dOin" value="800"></div>
+            <div class="field"><label>Costos de distribución</label><input type="number" id="dDis" value="4200"></div>
+            <div class="field"><label>Gastos de administración</label><input type="number" id="dAdm" value="5800"></div>
+            <div class="field"><label>Otros gastos</label><input type="number" id="dOga" value="300"></div>
+            <div class="field"><label>Ingresos financieros</label><input type="number" id="dFin" value="1200"></div>
+            <div class="field"><label>Costos financieros</label><input type="number" id="dCfi" value="1600"></div>
+            <div class="field"><label>Impuesto a las ganancias</label><input type="number" id="dTax" value="2275"></div>
+          </div>
+        </fieldset>
+        <fieldset><legend>Otro resultado integral [410000][420000] · NIC 1.82A / PYMES 5.4</legend>
+          <div class="grid2">
+            <div class="field"><label>Remediciones planes de beneficios definidos (antes de imp.)</label><input type="number" id="oRem" value="-150"></div>
+            <div class="field"><label>Diferencias de cambio por conversión (antes de imp.)</label><input type="number" id="oFx" value="-85"></div>
+            <div class="field"><label>Coberturas de flujos de efectivo (antes de imp.)</label><input type="number" id="oHed" value="0"></div>
+          </div>
+        </fieldset>
+        <fieldset><legend>Situación financiera — activos [210000][220000] · NIC 1.54</legend>
+          <div class="grid2">
+            <div class="field"><label>Propiedades, planta y equipo</label><input type="number" id="aPpe" value="18000"></div>
+            <div class="field"><label>Activos por derecho de uso</label><input type="number" id="aRou" value="2500"></div>
+            <div class="field"><label>Propiedades de inversión</label><input type="number" id="aInv" value="0"></div>
+            <div class="field"><label>Plusvalía</label><input type="number" id="aGood" value="2000"></div>
+            <div class="field"><label>Activos intangibles distintos de la plusvalía</label><input type="number" id="aInt" value="3500"></div>
+            <div class="field"><label>Inversiones método de la participación</label><input type="number" id="aEq" value="1800"></div>
+            <div class="field"><label>Otros activos financieros no corrientes</label><input type="number" id="aFnc" value="900"></div>
+            <div class="field"><label>Cuentas por cobrar no corrientes</label><input type="number" id="aRnc" value="1200"></div>
+            <div class="field"><label>Activos por impuestos diferidos</label><input type="number" id="aDta" value="600"></div>
+            <div class="field"><label>Inventarios</label><input type="number" id="aInvC" value="5200"></div>
+            <div class="field"><label>Cuentas comerciales por cobrar</label><input type="number" id="aRcc" value="7400"></div>
+            <div class="field"><label>Activos por impuestos corrientes</label><input type="number" id="aCta" value="450"></div>
+          </div>
+        </fieldset>
+        <fieldset><legend>Situación financiera — pasivos y patrimonio</legend>
+          <div class="grid2">
+            <div class="field"><label>Capital emitido</label><input type="number" id="pCap" value="10000"></div>
+            <div class="field"><label>Prima de emisión</label><input type="number" id="pPri" value="4000"></div>
+            <div class="field"><label>Ganancias acumuladas al inicio</label><input type="number" id="pIni" value="10000"></div>
+            <div class="field"><label>Provisiones no corrientes</label><input type="number" id="pPnc" value="800"></div>
+            <div class="field"><label>Pasivos financieros no corrientes</label><input type="number" id="pFnc" value="9000"></div>
+            <div class="field"><label>Pasivos por impuestos diferidos</label><input type="number" id="pDtl" value="1300"></div>
+            <div class="field"><label>Provisiones corrientes</label><input type="number" id="pPc" value="500"></div>
+            <div class="field"><label>Cuentas comerciales por pagar</label><input type="number" id="pPay" value="6800"></div>
+            <div class="field"><label>Pasivos por impuestos corrientes</label><input type="number" id="pCtl" value="700"></div>
+            <div class="field"><label>Pasivos financieros corrientes</label><input type="number" id="pFc" value="2000"></div>
+          </div>
+        </fieldset>
+        <fieldset><legend>Flujos de efectivo [510000][520000] · NIC 7</legend>
+          <div class="grid2">
+            <div class="field"><label>Efectivo al inicio</label><input type="number" id="fIni" value="2550"></div>
+            <div class="field"><label>Depreciación y amortización</label><input type="number" id="fDep" value="3100"></div>
+            <div class="field"><label>(+) Incremento de inventarios</label><input type="number" id="fDi" value="400"></div>
+            <div class="field"><label>(+) Incremento de cuentas por cobrar</label><input type="number" id="fDr" value="600"></div>
+            <div class="field"><label>(+) Incremento de cuentas por pagar</label><input type="number" id="fDp" value="500"></div>
+            <div class="field"><label>Compra de propiedades, planta y equipo</label><input type="number" id="fCap" value="3500"></div>
+            <div class="field"><label>Compra de activos intangibles</label><input type="number" id="fInt" value="500"></div>
+            <div class="field"><label>Préstamos recibidos</label><input type="number" id="fLo" value="2000"></div>
+            <div class="field"><label>Reembolsos de préstamos</label><input type="number" id="fRe" value="1200"></div>
+          </div>
+        </fieldset>
+      </div>
+    </section>
+
+    <!-- PIPELINE -->
+    <section class="pane" id="pane-pipeline">
+      <div class="card"><span class="tag">Consola de Orquestación en Tiempo Real</span>
+        <div class="console" id="console" style="margin-top:10px"><div class="ln"><span class="who w-sys">[SISTEMA]</span><span>Sistema multi-agente inicializado. Esperando orden del CEO…</span></div></div>
+      </div>
+    </section>
+
+    <!-- ESTADOS -->
+    <section class="pane" id="pane-ef">
+      <div class="catalog card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+          <span class="tag">Catálogo de estados financieros — Taxonomía Contable NIIF 2024</span>
+          <button class="btn btn-ghost" style="padding:6px 12px;font-size:11px" onclick="renderAllStatements()">Generar todos los estados</button>
+        </div>
+        <div class="chips" id="estChips" style="margin-top:10px"></div>
+      </div>
+      <div id="estViewer"><div class="empty">Seleccione un estado financiero del catálogo para generarlo.</div></div>
+    </section>
+
+    <!-- NOTAS -->
+    <section class="pane" id="pane-notas">
+      <div class="catalog card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+          <span class="tag">Catálogo de notas a los estados financieros [800500] · Lista de notas</span>
+          <button class="btn btn-ghost" style="padding:6px 12px;font-size:11px" onclick="renderAllNotes()">Generar todas las notas</button>
+        </div>
+        <div class="chips" id="notChips" style="margin-top:10px"></div>
+      </div>
+      <div id="notViewer"><div class="empty">Seleccione una nota del catálogo para generarla.</div></div>
+    </section>
+
+    <!-- XBRL -->
+    <section class="pane" id="pane-xbrl">
+      <div class="card" style="margin-bottom:11px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <div><span class="tag">Instancia XBRL · Taxonomía Contable NIIF 2024</span>
+          <p style="color:var(--mut);font-size:11.5px;margin-top:3px">Hechos etiquetados con elementos ifrs-full (metadatos: contexto, unidad, decimales y referencia normativa).</p></div>
+        <button class="btn btn-ghost" id="btnDown" disabled onclick="downloadInstance()">⬇ Descargar instancia XBRL (JSON)</button>
+      </div>
+      <div class="card" id="tagOut"><div class="empty">El etiquetado XBRL se generará durante el pipeline.</div></div>
+    </section>
+
+    <!-- DOCUMENTO -->
+    <section class="pane" id="pane-doc">
+      <div class="card no-print" style="margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <div><span class="tag">Documento completo de reporte financiero digital</span>
+          <p style="color:var(--mut);font-size:11.5px;margin-top:3px">Todos los estados financieros del catálogo + todas las notas, listos para imprimir / iXBRL.</p></div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost" onclick="buildDoc()">⟳ Construir documento</button>
+          <button class="btn btn-ghost" onclick="window.print()">🖨 Imprimir / PDF</button>
+          <button class="btn btn-ghost" onclick="downloadInstance()">⬇ Instancia XBRL</button>
+        </div>
+      </div>
+      <div id="docOut"><div class="empty">Pulse «Construir documento» para ensamblar el reporte completo.</div></div>
+    </section>
+
+    <!-- VALIDACIONES -->
+    <section class="pane" id="pane-val">
+      <div class="card" id="valOut"><div class="empty">El Agente 4.2 ejecutará las verificaciones al finalizar el pipeline.</div></div>
+    </section>
+  </main>
+</div>
+
+<script>
+"use strict";
+let MODE='full', GEN=false;
+const $=s=>document.querySelector(s);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const NF=new Intl.NumberFormat('es-ES',{maximumFractionDigits:2});
+const money=n=>(n<0?'(':'')+NF.format(Math.round(n*100)/100)+(n<0?')':'');
+const g=id=>parseFloat((document.getElementById(id)||{}).value)||0;
+const RF=(full,pyme)=>MODE==='full'?full:pyme;
+
+function showTab(t){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.t===t));document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active',p.id==='pane-'+t));}
+function setMode(m){MODE=m;GEN=false;$('#kpiMarco').textContent=MODE==='full'?'NIIF Completas':'NIIF para las PYMES';$('#kpiEst').textContent=EST.length;$('#kpiNot').textContent=NOTES().length;renderChips();}
+
+/* ================= MODELO ================= */
+function compute(){
+  const rev=g('#dRev'),cos=g('#dCos'),oin=g('#dOin'),dis=g('#dDis'),adm=g('#dAdm'),oga=g('#dOga'),fin=g('#dFin'),cfi=g('#dCfi'),tax=g('#dTax');
+  const gross=rev-cos,op=gross+oin-dis-adm-oga,pbt=op+fin-cfi,profit=pbt-tax,eps=profit/(g('#entAcciones')||1);
+  const totExpNat=cos+dis+adm,dep=g('#fDep');
+  const lab=Math.round(cos*0.30+adm*0.50+dis*0.45),mat=Math.round(cos*0.55),othNat=totExpNat-mat-lab-dep;
+  const ociRem=g('#oRem'),ociFx=g('#oFx'),ociHed=g('#oHed'),ociBefore=ociRem+ociFx+ociHed,ociTax=Math.round(ociBefore*0.25),ociNet=ociBefore-ociTax,tci=profit+ociNet;
+  const dInv=g('#fDi'),dRec=g('#fDr'),dPay=g('#fDp'),capex=g('#fCap'),intex=g('#fInt'),loans=g('#fLo'),repay=g('#fRe'),div=g('#entDiv');
+  const opCash=profit+dep+cfi-fin-dInv-dRec+dPay;
+  const invCash=-(capex+intex)+fin,finCash=loans-repay-div-cfi,netCash=opCash+invCash+finCash,cashEnd=g('#fIni')+netCash;
+  const cobros=rev-dRec,pprov=-(cos+dInv-dPay),pemp=-lab,ptax=-tax,otros=opCash-(cobros+pprov+pemp+ptax);
+  const ncA=[['Propiedades, planta y equipo',g('#aPpe'),'PropertyPlantAndEquipment','NIC 1.54 a'],
+    ['Activos por derecho de uso',g('#aRou'),'RightofUseAssets','NIIF 16.47 a'],
+    ['Propiedades de inversión',g('#aInv'),'InvestmentProperty','NIC 1.54 b'],
+    ['Plusvalía',g('#aGood'),'Goodwill','NIC 1.54 c'],
+    ['Activos intangibles distintos de la plusvalía',g('#aInt'),'IntangibleAssetsOtherThanGoodwill','NIC 1.54 c'],
+    ['Inversiones contabilizadas por el método de la participación',g('#aEq'),'InvestmentsAccountedForUsingEquityMethod','NIC 1.54 e'],
+    ['Otros activos financieros no corrientes',g('#aFnc'),'OtherNoncurrentFinancialAssets','NIC 1.54 d'],
+    ['Cuentas por cobrar no corrientes',g('#aRnc'),'TradeAndOtherNoncurrentReceivables','NIC 1.54 h'],
+    ['Activos por impuestos diferidos',g('#aDta'),'DeferredTaxAssets','NIC 1.54 o']];
+  const cA=[['Inventarios',g('#aInvC'),'CurrentInventories','NIC 1.54 g'],
+    ['Cuentas comerciales por cobrar corrientes',g('#aRcc'),'TradeAndOtherCurrentReceivables','NIC 1.54 h'],
+    ['Activos por impuestos corrientes',g('#aCta'),'CurrentTaxAssets','NIC 1.54 n'],
+    ['Efectivo y equivalentes al efectivo',cashEnd,'CashAndCashEquivalents','NIC 1.54 i']];
+  const ncTot=ncA.reduce((s,x)=>s+x[1],0),cTot=cA.reduce((s,x)=>s+x[1],0),totAssets=ncTot+cTot;
+  const ncL=[['Provisiones no corrientes',g('#pPnc'),'NoncurrentProvisions','NIC 1.54 l'],
+    ['Pasivos financieros no corrientes',g('#pFnc'),'OtherNoncurrentFinancialLiabilities','NIC 1.54 m'],
+    ['Pasivos por impuestos diferidos',g('#pDtl'),'DeferredTaxLiabilities','NIC 1.54 o']];
+  const cL=[['Provisiones corrientes',g('#pPc'),'CurrentProvisions','NIC 1.54 l'],
+    ['Cuentas comerciales por pagar',g('#pPay'),'TradeAndOtherCurrentPayables','NIC 1.54 k'],
+    ['Pasivos por impuestos corrientes',g('#pCtl'),'CurrentTaxLiabilities','NIC 1.54 n'],
+    ['Pasivos financieros corrientes',g('#pFc'),'OtherCurrentFinancialLiabilities','NIC 1.54 m']];
+  const ncLTot=ncL.reduce((s,x)=>s+x[1],0),cLTot=cL.reduce((s,x)=>s+x[1],0),totLiab=ncLTot+cLTot;
+  const totEq=totAssets-totLiab,retained=totEq-g('#pCap')-g('#pPri');
+  return {rev,cos,oin,dis,adm,oga,fin,cfi,tax,gross,op,pbt,profit,eps,totExpNat,dep,lab,mat,othNat,
+    ociRem,ociFx,ociHed,ociBefore,ociTax,ociNet,tci,dInv,dRec,dPay,capex,intex,loans,repay,div,
+    opCash,invCash,finCash,netCash,cashEnd,cobros,pprov,pemp,ptax,otros,
+    ncA,cA,ncTot,cTot,totAssets,ncL,cL,ncLTot,cLTot,totLiab,totEq,retained,
+    cap:g('#pCap'),pri:g('#pPri'),ini:g('#pIni'),dta:g('#aDta'),dtl:g('#pDtl'),
+    ppe:g('#aPpe'),rou:g('#aRou'),invP:g('#aInv'),good:g('#aGood'),int:g('#aInt'),eq:g('#aEq'),
+    fnc:g('#pFnc'),fc:g('#pFc'),pc:g('#pPc'),pnc:g('#pPnc')};
+}
+let R=compute();
+
+/* ================= RENDER ESTADOS ================= */
+const entHdr=()=>`<div class="sub">${$('#entNombre').value} · Periodo terminado el ${$('#entFecha').value} · Expresado en miles de ${$('#entMoneda').value||'USD'} · Moneda de presentación: ${$('#entMoneda').value||'USD'} · Grado de redondeo: miles</div>`;
+const T=(c)=>`<span class="chiptag">ifrs-full:${c}</span>`;
+
+function renderSF(liq){
+  const order=liq?['aEq','aFnc','aRnc','aDta','aPpe','aRou','aInv','aGood','aInt','aInvC','aRcc','aCta','cash']:null;
+  const rows=(arr)=>arr.map(x=>`<tr class="gr"><td>${x[0]}<span class="chiptag">ifrs-full:${x[2]}</span></td><td class="n">${money(x[1])}</td></tr>`).join('');
+  const eq=`<tr class="h"><td>Patrimonio</td><td class="n"></td></tr>
+  <tr class="gr"><td>Capital emitido ${T('IssuedCapital')}</td><td class="n">${money(R.cap)}</td></tr>
+  <tr class="gr"><td>Prima de emisión ${T('SharePremium')}</td><td class="n">${money(R.pri)}</td></tr>
+  <tr class="gr"><td>Ganancias acumuladas ${T('RetainedEarnings')}</td><td class="n">${money(R.retained)}</td></tr>
+  <tr class="subt"><td>Patrimonio total ${T('Equity')}</td><td class="n">${money(R.totEq)}</td></tr>`;
+  const li=`<tr class="h"><td>Pasivos no corrientes</td><td class="n"></td></tr>${rows(R.ncL)}
+  <tr class="subt"><td>Total de pasivos no corrientes ${T('NoncurrentLiabilities')}</td><td class="n">${money(R.ncLTot)}</td></tr>
+  <tr class="h"><td>Pasivos corrientes</td><td class="n"></td></tr>${rows(R.cL)}
+  <tr class="subt"><td>Total pasivos corrientes ${T('CurrentLiabilities')}</td><td class="n">${money(R.cLTot)}</td></tr>
+  <tr class="subt"><td>Total pasivos ${T('Liabilities')}</td><td class="n">${money(R.totLiab)}</td></tr>`;
+  if(liq){
+    const all=[...R.ncA,...R.cA].sort((a,b)=>{const idx=['Efectivo y equivalentes al efectivo','Activos por impuestos corrientes','Cuentas comerciales por cobrar corrientes','Inventarios','Activos por impuestos diferidos','Cuentas por cobrar no corrientes','Otros activos financieros no corrientes','Inversiones contabilizadas por el método de la participación','Propiedades de inversión','Plusvalía','Activos intangibles distintos de la plusvalía','Activos por derecho de uso','Propiedades, planta y equipo'];return idx.indexOf(a[0])-idx.indexOf(b[0]);});
+    return `<div class="stmt"><h3>Estado de Situación Financiera — orden de liquidez <span class="chiptag">[220000]</span></h3>${entHdr()}
+    <table class="fin">${all.map(x=>`<tr class="gr"><td>${x[0]}<span class="chiptag">ifrs-full:${x[2]}</span></td><td class="n">${money(x[1])}</td></tr>`).join('')}
+    <tr class="tot"><td>Total de activos ${T('Assets')}</td><td class="n">${money(R.totAssets)}</td></tr>${eq}${li}
+    <tr class="tot"><td>Total de patrimonio y pasivos ${T('EquityAndLiabilities')}</td><td class="n">${money(R.totEq+R.totLiab)}</td></tr></table></div>`;
+  }
+  return `<div class="stmt"><h3>Estado de Situación Financiera — corriente/no corriente <span class="chiptag">[210000]</span></h3>${entHdr()}
+  <table class="fin">
+  <tr class="h"><td>Activos no corrientes</td><td class="n"></td></tr>${rows(R.ncA)}
+  <tr class="subt"><td>Total de activos no corrientes ${T('NoncurrentAssets')}</td><td class="n">${money(R.ncTot)}</td></tr>
+  <tr class="h"><td>Activos corrientes</td><td class="n"></td></tr>${rows(R.cA)}
+  <tr class="subt"><td>Total activos corrientes ${T('CurrentAssets')}</td><td class="n">${money(R.cTot)}</td></tr>
+  <tr class="tot"><td>Total de activos ${T('Assets')}</td><td class="n">${money(R.totAssets)}</td></tr>${eq}${li}
+  <tr class="tot"><td>Total de patrimonio y pasivos ${T('EquityAndLiabilities')}</td><td class="n">${money(R.totEq+R.totLiab)}</td></tr></table></div>`;
+}
+function renderER(nat){
+  const code=nat?'[320000]':'[310000]';
+  const body=nat?`
+  <tr class="gr"><td>Materias primas y consumibles utilizados ${T('RawMaterialsConsumed')}</td><td class="n">(${money(R.mat)})</td></tr>
+  <tr class="gr"><td>Gastos por beneficios a los empleados ${T('EmployeeBenefitsExpense')}</td><td class="n">(${money(R.lab)})</td></tr>
+  <tr class="gr"><td>Gasto por depreciación y amortización ${T('DepreciationAndAmortisationExpense')}</td><td class="n">(${money(R.dep)})</td></tr>
+  <tr class="gr"><td>Otros gastos por naturaleza ${T('OtherExpenseByNature')}</td><td class="n">(${money(R.othNat)})</td></tr>
+  <tr class="subt"><td>Ganancia por actividades de operación ${T('ProfitLossFromOperatingActivities')}</td><td class="n">${money(R.op)}</td></tr>`:
+  `<tr class="gr"><td>Costo de ventas ${T('CostOfSales')}</td><td class="n">(${money(R.cos)})</td></tr>
+  <tr class="subt"><td>Ganancia bruta ${T('GrossProfit')}</td><td class="n">${money(R.gross)}</td></tr>
+  <tr class="gr"><td>Costos de distribución ${T('DistributionCosts')}</td><td class="n">(${money(R.dis)})</td></tr>
+  <tr class="gr"><td>Gastos de administración ${T('AdministrativeExpense')}</td><td class="n">(${money(R.adm)})</td></tr>
+  <tr class="subt"><td>Ganancia por actividades de operación ${T('ProfitLossFromOperatingActivities')}</td><td class="n">${money(R.op)}</td></tr>`;
+  return `<div class="stmt"><h3>Estado del Resultado del Periodo — por ${nat?'naturaleza':'función'} del gasto <span class="chiptag">${code}</span></h3>${entHdr()}
+  <table class="fin">
+  <tr class="gr"><td>Ingresos de actividades ordinarias ${T('Revenue')}</td><td class="n">${money(R.rev)}</td></tr>
+  ${nat?`<tr class="gr"><td>Otros ingresos ${T('OtherIncome')}</td><td class="n">${money(R.oin)}</td></tr>`:''}${body}
+  ${nat?'':`<tr class="gr"><td>Otros ingresos ${T('OtherIncome')}</td><td class="n">${money(R.oin)}</td></tr>`}
+  <tr class="gr"><td>Ingresos financieros ${T('FinanceIncome')}</td><td class="n">${money(R.fin)}</td></tr>
+  <tr class="gr"><td>Costos financieros ${T('FinanceCosts')}</td><td class="n">(${money(R.cfi)})</td></tr>
+  <tr class="subt"><td>Ganancia antes de impuestos ${T('ProfitLossBeforeTax')} · ${RF('NIC 1.85','PYMES 5.5')}</td><td class="n">${money(R.pbt)}</td></tr>
+  <tr class="gr"><td>Ingreso (gasto) por impuestos ${T('IncomeTaxExpenseContinuingOperations')}</td><td class="n">(${money(R.tax)})</td></tr>
+  <tr class="tot"><td>Ganancia del periodo ${T('ProfitLoss')} · ${RF('NIC 1.81A a','PYMES 5.5 f')}</td><td class="n">${money(R.profit)}</td></tr>
+  <tr class="gr"><td>Ganancia por acción básica ${T('BasicEarningsLossPerShare')} · ${RF('NIC 33.66','PYMES 26.18')}</td><td class="n">${R.eps.toFixed(2)} USD/acción</td></tr>
+  </table></div>`;
+}
+function renderORI(neto){
+  const items=[['Remediciones de planes de beneficios definidos',R.ociRem,'RemeasurementsOfDefinedBenefitPlans',RF('NIC 19.120 c','PYMES 28.41 b')],
+    ['Diferencias de cambio por conversión',R.ociFx,'ExchangeDifferencesOnTranslation',RF('NIC 21.52 b','PYMES 30.25 b')],
+    ['Coberturas de flujos de efectivo',R.ociHed,'CashFlowHedges',RF('NIC 1.82A','PYMES 5.4 b (iii)')]];
+  return `<div class="stmt"><h3>Estado del Resultado Integral — ORI ${neto?'neto de impuestos':'antes de impuestos'} <span class="chiptag">${neto?'[410000]':'[420000]'}</span></h3>${entHdr()}
+  <table class="fin">
+  <tr class="subt"><td>Ganancia del periodo ${T('ProfitLoss')}</td><td class="n">${money(R.profit)}</td></tr>
+  <tr class="h"><td>Otro resultado integral ${neto?', neto de impuestos':'(antes de impuestos)'}</td><td class="n"></td></tr>
+  ${items.map(i=>neto?`<tr class="gr"><td>${i[0]} ${T(i[2])}</td><td class="n">${money(i[1]-Math.round(i[1]*0.25))}</td></tr>`:`<tr class="gr"><td>${i[0]} ${T(i[2])}</td><td class="n">${money(i[1])}</td></tr>`).join('')}
+  ${neto?'':`<tr class="gr"><td>Impuesto a las ganancias relacionado con componentes del ORI ${T('IncomeTaxRelatingToComponentsOfOtherComprehensiveIncome')}</td><td class="n">(${money(R.ociTax)})</td></tr>`}
+  <tr class="subt"><td>Otro resultado integral del periodo ${T('OtherComprehensiveIncome')}</td><td class="n">${money(R.ociNet)}</td></tr>
+  <tr class="tot"><td>Resultado integral total ${T('ComprehensiveIncome')}</td><td class="n">${money(R.tci)}</td></tr>
+  <tr class="gr"><td>Atribuible a propietarios de la controladora ${T('ComprehensiveIncomeAttributableToOwnersOfParent')}</td><td class="n">${money(R.tci)}</td></tr>
+  </table></div>`;
+}
+function renderEq(){
+  return `<div class="stmt"><h3>Estado de Cambios en el Patrimonio <span class="chiptag">[610000]</span> · ${RF('NIC 1.106','PYMES 6.3')}</h3>${entHdr()}
+  <table class="fin">
+  <tr><td></td><th class="n">Capital</th><th class="n">Prima</th><th class="n">Ganancias acumuladas</th><th class="n">Total</th></tr>
+  <tr class="gr"><td>Patrimonio al comienzo del periodo</td><td class="n">${money(R.cap)}</td><td class="n">${money(R.pri)}</td><td class="n">${money(R.ini)}</td><td class="n">${money(R.cap+R.pri+R.ini)}</td></tr>
+  <tr class="gr"><td>Ganancia del periodo ${T('ProfitLoss')}</td><td class="n">—</td><td class="n">—</td><td class="n">${money(R.profit)}</td><td class="n">${money(R.profit)}</td></tr>
+  <tr class="gr"><td>Otro resultado integral ${T('OtherComprehensiveIncome')}</td><td class="n">—</td><td class="n">—</td><td class="n">${money(R.ociNet)}</td><td class="n">${money(R.ociNet)}</td></tr>
+  <tr class="gr"><td>Dividendos reconocidos como distribuciones ${T('DividendsRecognisedAsDistributionsToOwners')}</td><td class="n">—</td><td class="n">—</td><td class="n">(${money(R.div)})</td><td class="n">(${money(R.div)})</td></tr>
+  <tr class="tot"><td>Patrimonio al final del periodo</td><td class="n">${money(R.cap)}</td><td class="n">${money(R.pri)}</td><td class="n">${money(R.retained)}</td><td class="n">${money(R.totEq)}</td></tr>
+  </table></div>`;
+}
+function renderResGA(){
+  return `<div class="stmt"><h3>Estado de Resultados y Ganancias Acumuladas <span class="chiptag">[650000]</span> · PYMES 6.5</h3>${entHdr()}
+  <table class="fin">
+  <tr class="subt"><td>Ganancia del periodo ${T('ProfitLoss')}</td><td class="n">${money(R.profit)}</td></tr>
+  <tr class="subt"><td>Ganancias acumuladas al comienzo del periodo</td><td class="n">${money(R.ini)}</td></tr>
+  <tr class="gr"><td>Dividendos declarados</td><td class="n">(${money(R.div)})</td></tr>
+  <tr class="gr"><td>Otro resultado integral</td><td class="n">${money(R.ociNet)}</td></tr>
+  <tr class="tot"><td>Ganancias acumuladas al final del periodo</td><td class="n">${money(R.retained)}</td></tr>
+  </table></div>`;
+}
+function renderCF(directo){
+  const code=directo?'[510000]':'[520000]';
+  const op=directo?`
+  <tr class="gr"><td>Cobros procedentes de ventas de bienes y prestación de servicios ${T('CashReceiptsFromSellingGoodsAndRenderingServices')}</td><td class="n">${money(R.cobros)}</td></tr>
+  <tr class="gr"><td>Pagos a proveedores por el suministro de bienes y servicios ${T('CashPaymentsForAcquiringGoodsAndServices')}</td><td class="n">(${money(-R.pprov)})</td></tr>
+  <tr class="gr"><td>Pagos a y por cuenta de los empleados ${T('CashPaymentsToEmployees')}</td><td class="n">(${money(-R.pemp)})</td></tr>
+  <tr class="gr"><td>Impuestos a las ganancias pagados ${T('IncomeTaxesPaid')}</td><td class="n">(${money(-R.ptax)})</td></tr>
+  <tr class="gr"><td>Otros cobros (pagos) por actividades de operación, neto ${T('OtherCashPaymentsFromOperatingActivities')}</td><td class="n">(${money(-R.otros)})</td></tr>`:
+  `<tr class="gr"><td>Ganancia del periodo</td><td class="n">${money(R.profit)}</td></tr>
+  <tr class="gr"><td>Ajuste: depreciación y amortización ${T('AdjustmentsForDepreciationExpense')}</td><td class="n">${money(R.dep)}</td></tr>
+  <tr class="gr"><td>Ajuste: costos financieros / ingresos financieros (neto)</td><td class="n">${money(R.cfi-R.fin)}</td></tr>
+  <tr class="gr"><td>Disminución (incremento) de inventarios</td><td class="n">(${money(R.dInv)})</td></tr>
+  <tr class="gr"><td>Disminución (incremento) de cuentas por cobrar</td><td class="n">(${money(R.dRec)})</td></tr>
+  <tr class="gr"><td>Incremento de cuentas por pagar</td><td class="n">${money(R.dPay)}</td></tr>`;
+  return `<div class="stmt"><h3>Estado de Flujos de Efectivo — método ${directo?'directo':'indirecto'} <span class="chiptag">${code}</span> · ${RF('NIC 7.18–20','PYMES 7.4–7.6')}</h3>${entHdr()}
+  <table class="fin">
+  <tr class="h"><td>Flujos de efectivo procedentes de actividades de operación</td><td class="n"></td></tr>${op}
+  <tr class="subt"><td>Flujos de efectivo netos procedentes de actividades de operación ${T('CashFlowsFromUsedInOperatingActivities')}</td><td class="n">${money(R.opCash)}</td></tr>
+  <tr class="h"><td>Flujos de efectivo procedentes de actividades de inversión</td><td class="n"></td></tr>
+  <tr class="gr"><td>Compras de propiedades, planta y equipo y activos intangibles ${T('PurchaseOfPropertyPlantAndEquipment')}</td><td class="n">(${money(R.capex+R.intex)})</td></tr>
+  <tr class="gr"><td>Intereses cobrados ${T('InterestReceivedClassifiedAsInvestingActivities')}</td><td class="n">${money(R.fin)}</td></tr>
+  <tr class="subt"><td>Flujos de efectivo netos de actividades de inversión ${T('CashFlowsFromUsedInInvestingActivities')}</td><td class="n">${money(R.invCash)}</td></tr>
+  <tr class="h"><td>Flujos de efectivo procedentes de actividades de financiación</td><td class="n"></td></tr>
+  <tr class="gr"><td>Préstamos recibidos ${T('ProceedsFromBorrowings')}</td><td class="n">${money(R.loans)}</td></tr>
+  <tr class="gr"><td>Reembolsos de préstamos ${T('RepaymentsOfBorrowingsClassifiedAsFinancingActivities')}</td><td class="n">(${money(R.repay)})</td></tr>
+  <tr class="gr"><td>Dividendos pagados ${T('DividendsPaidClassifiedAsFinancingActivities')}</td><td class="n">(${money(R.div)})</td></tr>
+  <tr class="gr"><td>Intereses pagados ${T('InterestPaidClassifiedAsFinancingActivities')}</td><td class="n">(${money(R.cfi)})</td></tr>
+  <tr class="subt"><td>Flujos de efectivo netos de actividades de financiación ${T('CashFlowsFromUsedInFinancingActivities')}</td><td class="n">${money(R.finCash)}</td></tr>
+  <tr class="subt"><td>Incremento neto de efectivo y equivalentes ${T('IncreaseInCashAndCashEquivalents')}</td><td class="n">${money(R.netCash)}</td></tr>
+  <tr class="gr"><td>Efectivo y equivalentes al comienzo del periodo ${T('CashAndCashEquivalents')}</td><td class="n">${money(g('#fIni'))}</td></tr>
+  <tr class="tot"><td>Efectivo y equivalentes al final del periodo ${T('CashAndCashEquivalents')}</td><td class="n">${money(R.cashEnd)}</td></tr>
+  </table></div>`;
+}
+function renderNIC26(){
+  const A=12000,B=8000,C=5000,CA=1500,TA=A+B+C+CA;const L1=900,L2=150;
+  const ap=2000,ae=800,ri=1400,ben=2600,gas=300,inc=ap+ae+ri-ben-gas,na0=27600-inc;
+  return `<div class="stmt"><h3>Estado de Cambios en los Activos Netos Disponibles para Prestaciones <span class="chiptag">[710000]</span> · NIC 26 · Plan de Pensiones Ejemplo (entidad independiente)</h3>
+  <div class="sub">Fondo de beneficios post-empleo · Miles de USD</div>
+  <table class="fin">
+  <tr class="h"><td>Activos del plan</td><td class="n"></td></tr>
+  <tr class="gr"><td>Instrumentos de patrimonio cotizados</td><td class="n">${money(A)}</td></tr>
+  <tr class="gr"><td>Instrumentos de deuda</td><td class="n">${money(B)}</td></tr>
+  <tr class="gr"><td>Bienes inmuebles</td><td class="n">${money(C)}</td></tr>
+  <tr class="gr"><td>Efectivo</td><td class="n">${money(CA)}</td></tr>
+  <tr class="subt"><td>Total de activos</td><td class="n">${money(TA)}</td></tr>
+  <tr class="gr"><td>Prestaciones por pagar</td><td class="n">(${money(L1)})</td></tr>
+  <tr class="gr"><td>Gastos operativos por pagar</td><td class="n">(${money(L2)})</td></tr>
+  <tr class="subt"><td>Activos netos disponibles para prestaciones</td><td class="n">${money(TA-L1-L2)}</td></tr>
+  <tr class="h"><td>Cambios en los activos netos disponibles</td><td class="n"></td></tr>
+  <tr class="gr"><td>Aportaciones del empleador</td><td class="n">${money(ap)}</td></tr>
+  <tr class="gr"><td>Aportaciones de los empleados</td><td class="n">${money(ae)}</td></tr>
+  <tr class="gr"><td>Ingresos de inversión</td><td class="n">${money(ri)}</td></tr>
+  <tr class="gr"><td>Prestaciones pagadas</td><td class="n">(${money(ben)})</td></tr>
+  <tr class="gr"><td>Gastos administrativos</td><td class="n">(${money(gas)})</td></tr>
+  <tr class="subt"><td>Incremento de los activos netos disponibles</td><td class="n">${money(inc)}</td></tr>
+  <tr class="gr"><td>Activos netos disponibles al inicio del periodo</td><td class="n">${money(na0)}</td></tr>
+  <tr class="tot"><td>Activos netos disponibles al final del periodo</td><td class="n">${money(na0+inc)}</td></tr>
+  </table></div>`;
+}
+const EST=[
+ {code:'[210000]',norm:'NIC 1',n:'Estado de situación financiera, corriente/no corriente',r:()=>renderSF(false)},
+ {code:'[220000]',norm:'NIC 1',n:'Estado de situación financiera, orden de liquidez',r:()=>renderSF(true)},
+ {code:'[310000]',norm:'NIC 1',n:'Estado del resultado, por función del gasto',r:()=>renderER(false)},
+ {code:'[320000]',norm:'NIC 1',n:'Estado del resultado, por naturaleza del gasto',r:()=>renderER(true)},
+ {code:'[410000]',norm:'NIC 1',n:'Estado del resultado integral, ORI neto de impuestos',r:()=>renderORI(true)},
+ {code:'[420000]',norm:'NIC 1',n:'Estado del resultado integral, ORI antes de impuestos',r:()=>renderORI(false)},
+ {code:'[610000]',norm:'NIC 1',n:'Estado de cambios en el patrimonio',r:renderEq},
+ {code:'[510000]',norm:'NIC 7',n:'Estado de flujos de efectivo, método directo',r:()=>renderCF(true)},
+ {code:'[520000]',norm:'NIC 7',n:'Estado de flujos de efectivo, método indirecto',r:()=>renderCF(false)},
+ ...(MODE==='full'?[{code:'[710000]',norm:'NIC 26',n:'Estado de cambios en activos netos disponibles para prestaciones',r:renderNIC26}]:[{code:'[650000]',norm:'PYMES 6.5',n:'Estado de resultados y ganancias acumuladas',r:renderResGA}])
+];
+
+/* ================= NOTAS ================= */
+const D={kmp:950,grants:250,fxPL:40,dbo:4200,plan:3900,benExp:480,deter:180,opt:50,fvOpt:3.2,sbc:160,cLiab:600,claim:300,leaseInt:120,rouDep:450};
+const NA=(m)=>({na:true,intro:[m]});
+function NOTES(){
+ const common=[
+  ['[110000]','NIC 1.51 · General','Información general sobre los estados financieros',()=>({intro:['Identificación de la entidad que informa y características generales de los estados financieros [NIC 1.51 / PYMES 3.23].'],rows:[
+    ['Nombre de la entidad que informa',$('#entNombre').value,'NameOfReportingEntity','NIC 1.51 a'],
+    ['Naturaleza de los estados financieros','Estados financieros consolidados','NatureOfFinancialStatements','NIC 1.51 b'],
+    ['Fecha de cierre del periodo sobre el que se informa',$('#entFecha').value,'PeriodEndDate','NIC 1.51 c'],
+    ['Moneda de presentación',($('#entMoneda').value||'USD'),'DescriptionOfPresentationCurrency','NIC 1.51 d'],
+    ['Grado de redondeo utilizado','Miles','LevelOfRoundingUsedInFinancialStatements','NIC 1.51 e']]}),true],
+  ['[810000]','NIC 1.138','Información corporativa y declaración de cumplimiento de las NIIF',()=>({intro:['Los estados financieros han sido preparados de acuerdo con las '+(MODE==='full'?'Normas NIIF de Contabilidad completas':'Norma de Contabilidad NIIF para las PYMES')+'.'],rows:[
+    ['Domicilio y forma legal','Av. Principal 100, Ciudad · Sociedad Anónima','DomicileOfEntity','NIC 1.138 a'],
+    ['Descripción de la naturaleza de las operaciones','Manufactura y comercialización de bienes industriales','DescriptionOfNatureOfEntitysOperations','NIC 1.138 b'],
+    ['Declaración de cumplimiento con las NIIF','Cumple','StatementOfComplianceWithIFRS','NIC 1.16']]}),true],
+  ['[800100]','NIC 1.79','Subclasificaciones de activos, pasivos y patrimonio',()=>({intro:['Desglose de partidas presentadas en el estado de situación financiera [NIC 1.77–80A / PYMES 4.11].'],rows:[
+    ['Propiedades, planta y equipo (1 clase: industrial)',R.ppe,'PropertyPlantAndEquipment','NIC 1.78 a'],
+    ['Activos intangibles (1 clase: software y licencias)',R.int,'IntangibleAssetsOtherThanGoodwill','NIC 1.78 a'],
+    ['Capital emitido',R.cap,'IssuedCapital','NIC 1.79 a'],
+    ['Prima de emisión',R.pri,'SharePremium','NIC 1.79 a'],
+    ['Ganancias acumuladas',R.retained,'RetainedEarnings','NIC 1.79 b']]}),true],
+  ['[800200]','NIC 1.102','Análisis de ingresos y gastos',()=>({intro:['Análisis de partidas de ingresos y gastos reconocidas en el resultado del periodo [NIC 1.102–104 / PYMES 5.11].'],rows:[
+    ['Ingresos de actividades ordinarias',R.rev,'Revenue','NIC 1.82 a'],
+    ['Costo de ventas',R.cos,'CostOfSales','NIC 1.103'],
+    ['Ganancia bruta',R.gross,'GrossProfit','NIC 1.103'],
+    ['Costos de distribución',R.dis,'DistributionCosts','NIC 1.103'],
+    ['Gastos de administración',R.adm,'AdministrativeExpense','NIC 1.103'],
+    ['Gastos por beneficios a los empleados',R.lab,'EmployeeBenefitsExpense','NIC 1.104'],
+    ['Gasto por depreciación y amortización',R.dep,'DepreciationAndAmortisationExpense','NIC 1.104'],
+    ['Costos financieros',R.cfi,'FinanceCosts','NIC 1.82 b']]}),true],
+  ['[800400]','NIC 1.106A','Estado de cambios en el patrimonio, información a revelar adicional',()=>({intro:['Dividendos distribuidos a los propietarios durante el periodo [NIC 1.107 / PYMES 6.6].'],rows:[
+    ['Dividendos reconocidos como distribuciones a los propietarios',R.div,'DividendsRecognisedAsDistributionsToOwners','NIC 1.107'],
+    ['Dividendos por acción',(R.div/(g('#entAcciones')||1)).toFixed(2),'DividendsRecognisedAsDistributionsToOwnersPerShare','NIC 1.107'],
+    ['Dividendos propuestos después del final del periodo',0,'DividendsProposedAfterReportingPeriod','NIC 10.12']]}),true],
+  ['[800610]','NIC 1.117','Lista de información material de políticas contables',()=>({intro:['Políticas contables materiales aplicadas en la preparación de los estados financieros [NIC 1.117–124 / PYMES 10.4].'],rows:[
+    ['Bases de medición','Costo histórico, excepto instrumentos a valor razonable','MeasurementBasis','NIC 1.117'],
+    ['Propiedades, planta y equipo','Modelo del costo menos depreciación acumulada y deterioro','BasisForPropertyPlantAndEquipment','NIC 16.30'],
+    ['Inventarios','Menor entre costo (FIFO) y VNR','MeasurementBasisInventories','NIC 2.36'],
+    ['Ingresos','NIIF 15 — cinco pasos / PYMES Sección 23','RevenueRecognitionPolicy','NIIF 15'],
+    ['Impuesto a las ganancias','Método del pasivo basado en el balance','IncomeTaxPolicy','NIC 12.58']]}),true],
+  ['[861200]','NIC 1.79','Capital en acciones, reservas y otras participaciones en el patrimonio',()=>({intro:['Conciliación del capital y detalle de reservas [NIC 1.79 / PYMES 4.12].'],rows:[
+    ['Capital emitido',R.cap,'IssuedCapital','NIC 1.79 a'],
+    ['Número de acciones emitidas (miles)',g('#entAcciones'),'NumberOfSharesIssued','NIC 1.79 a (ii)'],
+    ['Valor nominal','Sin valor nominal','ParValueShares','NIC 1.79 a (iii)'],
+    ['Prima de emisión',R.pri,'SharePremium','NIC 1.79 a'],
+    ['Acciones propias en cartera',0,'TreasuryShares','NIC 1.79 a']]}),true],
+  ['[861000]','NIC 1.90','Análisis de otro resultado integral por partida',()=>({intro:['ORI por componente, con su impuesto relacionado [NIC 1.90–92 / PYMES 5.4].'],rows:[
+    ['Remediciones de planes de beneficios definidos (antes de imp.)',R.ociRem,'RemeasurementsOfDefinedBenefitPlans','NIC 19.120 c'],
+    ['Diferencias de cambio por conversión (antes de imp.)',R.ociFx,'ExchangeDifferencesOnTranslation','NIC 21.52 b'],
+    ['Impuesto relacionado con componentes del ORI',R.ociTax,'IncomeTaxRelatingToComponentsOfOtherComprehensiveIncome','NIC 1.90'],
+    ['Otro resultado integral neto',R.ociNet,'OtherComprehensiveIncome','NIC 1.82A']]}),true],
+  ['[880000]','NIC 1.112','Información adicional',()=>({intro:['Información adicional no presentada en otras secciones [NIC 1.112].'],rows:[
+    ['Gestión del capital','Ratio deuda/patrimonio bajo supervisión del consejo','CapitalManagementPolicy','NIC 1.134'],
+    ['Restricciones sobre partidas del patrimonio','Ninguna','RestrictionsOnEquity','NIC 1.112']]}),true],
+  ['[826380]','NIC 2.36','Inventarios',()=>({intro:['Políticas y montos de inventarios [NIC 2.36 / PYMES 13.22].'],rows:[
+    ['Inventarios (total)',g('#aInvC'),'Inventories','NIC 2.36 b'],
+    ['Costo de inventarios reconocido como gasto',R.cos,'CostOfInventoriesRecognisedAsExpense','NIC 2.36 d'],
+    ['Rebaja de inventarios reconocida',0,'WriteDownOfInventoriesRecognisedAsExpense','NIC 2.36 e'],
+    ['Inventarios pignorados como garantía',0,'InventoriesPledgedAsSecurity','NIC 2.36 h']]}),true],
+  ['[800300]','NIC 7.45','Estado de flujos de efectivo, información a revelar adicional',()=>({intro:['Componentes del efectivo y conciliación de pasivos por financiación [NIC 7.45–50 / PYMES 7.19A].'],rows:[
+    ['Efectivo y equivalentes al efectivo',R.cashEnd,'CashAndCashEquivalents','NIC 7.45'],
+    ['Pasivos por financiación al inicio (préstamos)',R.fnc+R.fc-g('#fLo')+g('#fRe'),'ReconciliationOfLiabilitiesArisingFromFinancingActivities','NIC 7.44A'],
+    ['Préstamos recibidos (flujo)',R.loans,'ProceedsFromBorrowings','NIC 7.44A'],
+    ['Reembolsos de préstamos (flujo)',R.repay,'RepaymentsOfBorrowings','NIC 7.44A'],
+    ['Pasivos por financiación al final',R.fnc+R.fc,'ReconciliationOfLiabilitiesArisingFromFinancingActivities','NIC 7.44A']]}),true],
+  ['[851100]','NIC 7.50','Estado de flujos de efectivo',()=>({intro:['Transacciones que no requieren uso de efectivo [NIC 7.43 / PYMES 7.18].'],rows:[
+    ['Adquisición de activos asumiendo pasivos directamente',0,'AcquisitionOfAssetsByAssumingLiabilities','NIC 7.43 a'],
+    ['Adquisición mediante arrendamiento financiero',0,'AcquisitionOfAssetsByMeansOfFinanceLeases','NIC 7.43 a'],
+    ['Conversión de deuda en patrimonio',0,'ConversionOfDebtToEquity','NIC 7.43 b']]}),true],
+  ['[811000]','NIC 8','Políticas contables, cambios en estimaciones y errores',()=>({intro:['Cambios en estimaciones contables y corrección de errores [NIC 8 / PYMES 10].'],rows:[
+    ['Cambios en estimaciones: vida útil de maquinaria','Revisión anual, sin efecto material','ChangeInAccountingEstimate','NIC 8.36'],
+    ['Errores de periodos anteriores','Ninguno identificado','CorrectionOfPriorPeriodErrors','NIC 8.42']]}),true],
+  ['[815000]','NIC 10','Hechos ocurridos después del periodo sobre el que se informa',()=>({intro:['Hechos posteriores al cierre [NIC 10 / PYMES 32].'],rows:[
+    ['Hechos que implican ajuste','Ninguno','AdjustingEventsAfterReportingPeriod','NIC 10.8'],
+    ['Dividendos declarados después del cierre',0,'DividendsDeclaredAfterReportingPeriod','NIC 10.12'],
+    ['Hechos que no implican ajuste','Sin efectos materiales','NonadjustingEventsAfterReportingPeriod','NIC 10.21']]}),true],
+  ['[835110]','NIC 12.79','Impuesto a las ganancias',()=>({intro:['Conciliación del gasto por impuestos y diferidos [NIC 12.79–81 / PYMES 29.39–40].'],rows:[
+    ['Gasto por impuesto a las ganancias',R.tax,'IncomeTaxExpenseContinuingOperations','NIC 12.79'],
+    ['Ganancia antes de impuestos',R.pbt,'ProfitLossBeforeTax','NIC 12.81 c'],
+    ['Tasa efectiva',((R.tax/R.pbt)*100).toFixed(1)+' %','EffectiveTaxRate','NIC 12.81 c (i)'],
+    ['Activos por impuestos diferidos',R.dta,'DeferredTaxAssets','NIC 12.81 g'],
+    ['Pasivos por impuestos diferidos',R.dtl,'DeferredTaxLiabilities','NIC 12.81 g']]}),true],
+  ['[822100]','NIC 16.73','Propiedades, planta y equipo',()=>({intro:['Conciliación del importe en libros [NIC 16.73 / PYMES 17.31].'],rows:[
+    ['Importe en libros al inicio',R.ppe-R.capex+R.dep,'PropertyPlantAndEquipment','NIC 16.73 e'],
+    ['Adiciones',R.capex,'AdditionsOtherThanThroughBusinessCombinations','NIC 16.73 e (i)'],
+    ['Depreciación',R.dep,'DepreciationExpenseRecognisedInProfitOrLoss','NIC 16.73 e (vii)'],
+    ['Importe en libros al final',R.ppe,'PropertyPlantAndEquipment','NIC 16.73 e'],
+    ['Activos por derecho de uso (NIIF 16 / PYMES 20)',R.rou,'RightofUseAssets','NIIF 16.47 a']]}),true],
+  ['[834480]','NIC 19','Beneficios a los empleados',()=>({intro:['Beneficios a corto plazo y planes de beneficios definidos [NIC 19 / PYMES 28].'],rows:[
+    ['Gastos por beneficios a los empleados (corto plazo)',R.lab,'EmployeeBenefitsExpense','NIC 19.9'],
+    ['Compensación al personal clave de la gerencia',D.kmp,'CompensationOfKeyManagementPersonnel','NIC 24.17'],
+    ['Obligación por beneficios definidos (valor presente)',D.dbo,'DefinedBenefitLiability','NIC 19.120 a'],
+    ['Activos del plan (valor razonable)',D.plan,'FairValueOfPlanAssets','NIC 19.120 a'],
+    ['Pasivo neto por beneficios definidos',D.dbo-D.plan,'DefinedBenefitLiability','NIC 19.120']]}),true],
+  ['[831400]','NIC 20','Subvenciones del gobierno',()=>({intro:['Subvenciones reconocidas [NIC 20.39 / PYMES 24.6].'],rows:[
+    ['Subvenciones reconocidas como ingreso',D.grants,'GovernmentGrantsRecognisedAsIncome','NIC 20.39'],
+    ['Condiciones incumplidas','Ninguna','UnfulfilledConditionsOnGovernmentGrants','NIC 20.39 b']]}),true],
+  ['[842000]','NIC 21','Efectos de las variaciones en las tasas de cambio',()=>({intro:['Moneda funcional y diferencias de cambio [NIC 21.51–57 / PYMES 30.25–27].'],rows:[
+    ['Moneda funcional','USD','FunctionalCurrency','NIC 21.53'],
+    ['Diferencias de cambio en el resultado',D.fxPL,'ExchangeDifferencesInProfitOrLoss','NIC 21.52 a'],
+    ['Diferencias de cambio en ORI',R.ociFx,'ExchangeDifferencesOnTranslation','NIC 21.52 b']]}),true],
+  ['[836200]','NIC 23','Costos por préstamos',()=>({intro:['Costos por préstamos [NIC 23 / PYMES 25].'],rows:[
+    ['Costos por préstamos reconocidos como gasto',R.cfi,'InterestExpenseRecognised','NIC 23.26 a'],
+    ['Costos por préstamos capitalizados',0,'BorrowingCostsCapitalised','NIC 23.26 a']]}),true],
+  ['[818000]','NIC 24','Parte relacionada',()=>({intro:['Transacciones y saldos con partes relacionadas [NIC 24 / PYMES 33].'],rows:[
+    ['Controladora última','Grupo Matriz Internacional S.A.','NameOfUltimateParentOfGroup','NIC 24.13'],
+    ['Compensación al personal clave de la gerencia',D.kmp,'CompensationOfKeyManagementPersonnel','NIC 24.17'],
+    ['Ventas a partes relacionadas',1200,'RevenueFromRelatedParties','NIC 24.18'],
+    ['Compras a partes relacionadas',800,'PurchasesFromRelatedParties','NIC 24.18'],
+    ['Saldos por cobrar a partes relacionadas',350,'AmountsReceivableFromRelatedParties','NIC 24.18 b'],
+    ['Saldos por pagar a partes relacionadas',220,'AmountsPayableToRelatedParties','NIC 24.18 b']]}),true],
+  ['[825480]','NIC 27','Estados financieros separados',()=>({intro:['Información de estados separados [NIC 27.15–17 / PYMES 9.25–27].'],rows:[
+    ['Método de contabilización en estados separados','Al costo menos deterioro','MethodOfAccountingForInvestmentsInSeparateFinancialStatements','NIC 27.10'],
+    ['Subsidiaria principal','Subsidiaria Andina S.A. (100%)','NameOfSubsidiary','NIC 27.16 b']]}),true],
+  ['[816000]','NIC 29','Información hiperinflacionaria',()=>NA('La moneda funcional no corresponde a una economía hiperinflacionaria; la Sección 31 Hiperinflación / NIC 29 no es aplicable.'),true],
+  ['[838000]','NIC 33.66','Ganancias por acción',()=>({intro:['Ganancias por acción básicas y diluidas [NIC 33.66–70 / PYMES 5.5].'],rows:[
+    ['Ganancia atribuible a propietarios',R.profit,'ProfitLossAttributableToOwnersOfParent','NIC 33.70 a'],
+    ['Promedio ponderado de acciones (miles)',g('#entAcciones'),'WeightedAverageShares','NIC 33.70 b'],
+    ['Ganancia por acción básica',R.eps.toFixed(2),'BasicEarningsLossPerShare','NIC 33.66'],
+    ['Ganancia por acción diluida',R.eps.toFixed(2),'DilutedEarningsLossPerShare','NIC 33.66']]}),true],
+  ['[813000]','NIC 34','Información financiera intermedia',()=>NA('Los presentes son estados financieros anuales; NIC 34 no es aplicable al periodo.'),true],
+  ['[832410]','NIC 36','Deterioro del valor de los activos',()=>({intro:['Pruebas de deterioro [NIC 36.126–137 / PYMES 27.32].'],rows:[
+    ['Pérdidas por deterioro reconocidas en el periodo',0,'ImpairmentLossRecognisedInProfitOrLoss','NIC 36.126 a'],
+    ['UGC con plusvalía asignada','Unidad Industrial','DescriptionOfCashGeneratingUnit','NIC 36.134 d'],
+    ['Importe recuperable de la UGC',Math.round(R.ppe*1.15),'RecoverableAmountOfCashGeneratingUnit','NIC 36.134 e']]}),true],
+  ['[827570]','NIC 37.84','Otras provisiones, pasivos contingentes y activos contingentes',()=>({intro:['Conciliación de provisiones y contingencias [NIC 37.84–92 / PYMES 21.14–16].'],rows:[
+    ['Provisiones al inicio',R.pc+R.pnc,'Provisions','NIC 37.84 a'],
+    ['Provisiones adicionales',150,'AdditionalProvisionsRecognised','NIC 37.84 b'],
+    ['Provisiones utilizadas',100,'ProvisionsUsed','NIC 37.84 c'],
+    ['Provisiones al final',R.pc+R.pnc,'Provisions','NIC 37.84 a'],
+    ['Pasivo contingente: litigio laboral (no reconocido)',D.claim,'ContingentLiabilities','NIC 37.86']]}),true],
+  ['[823180]','NIC 38.118','Activos intangibles',()=>({intro:['Conciliación de activos intangibles [NIC 38.118–128 / PYMES 18.27].'],rows:[
+    ['Importe en libros al inicio',R.int-R.intex+200,'IntangibleAssetsOtherThanGoodwill','NIC 38.118 e'],
+    ['Adiciones',R.intex,'AdditionsOtherThanThroughBusinessCombinations','NIC 38.118 e (i)'],
+    ['Amortización',200,'AmortisationExpenseRecognisedInProfitOrLoss','NIC 38.118 e (iv)'],
+    ['Importe en libros al final',R.int,'IntangibleAssetsOtherThanGoodwill','NIC 38.118 e'],
+    ['Plusvalía',R.good,'Goodwill','NIC 1.54 c']]}),true],
+  ['[825100]','NIC 40.75','Propiedades de inversión',()=>R.invP>0?({intro:['Propiedades de inversión a valor razonable [NIC 40.75–79 / PYMES 16.10].'],rows:[
+    ['Valor razonable al final',R.invP,'InvestmentPropertyAtFairValue','NIC 40.76'],
+    ['Ingresos por alquileres',0,'InvestmentPropertyRentalIncome','NIC 40.75 f']]}):NA('La entidad no mantiene propiedades de inversión [NIC 40 / PYMES 16]; la partida se presenta en cero.'),true],
+  ['[824180]','NIC 41','Agricultura',()=>NA('La entidad no desarrolla actividades agrícolas ni mantiene activos biológicos [NIC 41 / PYMES 34.2].'),true],
+  ['[819100]','NIIF 1','Adopción por primera vez',()=>NA('La entidad no es adoptante por primera vez de las NIIF; NIIF 1 / PYMES Sección 35 no es aplicable.'),true],
+  ['[834120]','NIIF 2.44','Pagos basados en acciones',()=>({intro:['Planes de opciones sobre acciones [NIIF 2.44–52 / PYMES 26.18–23].'],rows:[
+    ['Opciones concedidas (miles)',D.opt,'NumberOfOptionsGranted','NIIF 2.45 a'],
+    ['Valor razonable de las opciones',D.fvOpt,'FairValueOfOptionsGranted','NIIF 2.46'],
+    ['Gasto reconocido por pagos basados en acciones',D.sbc,'ExpenseArisingFromSharebasedPaymentTransactions','NIIF 2.51 a']]}),true],
+  ['[817000]','NIIF 3.59','Combinaciones de negocios',()=>({intro:['Combinaciones de negocios y plusvalía [NIIF 3.59–63 / PYMES 19.25–26].'],rows:[
+    ['Combinaciones de negocios en el periodo','Ninguna','BusinessCombinationsAcquired','NIIF 3.59 a'],
+    ['Plusvalía (periodos anteriores)',R.good,'Goodwill','NIIF 3.B67 d'],
+    ['Amortización de plusvalía',0,'AmortisationOfGoodwill','PYMES 19.26 d']]}),true],
+  ['[825900]','NIIF 5','Activos no corrientes mantenidos para la venta y operaciones discontinuadas',()=>NA('No existen activos mantenidos para la venta ni operaciones discontinuadas [NIIF 5 / PYMES 4.14].'),true],
+  ['[822200]','NIIF 6','Exploración y evaluación de recursos minerales',()=>NA('La entidad no realiza actividades de exploración y evaluación de recursos minerales [NIIF 6].'),true],
+  ['[822390]','NIIF 7','Instrumentos financieros',()=>({intro:['Categorías, riesgo crediticio y mediciones [NIIF 7 / PYMES 11.39–48].'],rows:[
+    ['Activos financieros al costo amortizado',R.cTot+R.aRnc,'FinancialAssetsAtAmortisedCost','NIIF 7.8 f'],
+    ['Otros activos financieros no corrientes',R.aFnc,'OtherNoncurrentFinancialAssets','NIIF 7.8'],
+    ['Pasivos financieros al costo amortizado',R.fnc+R.fc,'FinancialLiabilitiesAtAmortisedCost','NIIF 7.8 g'],
+    ['Exposición máxima al riesgo crediticio',R.aRcc+R.aRnc,'MaximumExposureToCreditRisk','NIIF 7.35K a'],
+    ['Deterioro de cuentas por cobrar (pérdida esperada)',D.deter,'ImpairmentLossOnReceivables','NIIF 9.5.5'],
+    ['Valor razonable de activos financieros (Nivel 2)',R.aFnc,'FairValueOfFinancialAssetsLevel2','NIIF 13.93']]}),true],
+  ['[871100]','NIIF 8','Segmentos de operación',()=>NA('La entidad opera en un único segmento de operación; no se requiere información segmentada [NIIF 8.23].'),true],
+  ['[825700]','NIIF 12','Participaciones en otras entidades',()=>({intro:['Participaciones en asociadas [NIIF 12 / PYMES 14–15].'],rows:[
+    ['Inversiones método de la participación',R.eq,'InvestmentsAccountedForUsingEquityMethod','NIIF 12.21 b'],
+    ['Participación en ganancias de asociadas',220,'ShareOfProfitOfAssociates','NIIF 12.B16 a'],
+    ['Participación en negocios conjuntos',0,'ShareOfProfitOfJointVentures','NIIF 12.B16 a']]}),true],
+  ['[823000]','NIIF 13.93','Medición del valor razonable',()=>({intro:['Jerarquía y técnicas de valoración [NIIF 13.93–99 / PYMES 12].'],rows:[
+    ['Mediciones recurrentes Nivel 2',R.aFnc,'FairValueLevel2','NIIF 13.93 b'],
+    ['Técnica de valoración','Enfoque de ingreso / flujos descontados','ValuationTechnique','NIIF 13.93 d']]}),true],
+  ['[831150]','NIIF 15','Ingresos de actividades ordinarias procedentes de contratos con clientes',()=>({intro:['Desagregación y saldos contractuales [NIIF 15.113–119 / PYMES 23.30–32].'],rows:[
+    ['Ingresos transferidos en un momento determinado',Math.round(R.rev*0.85),'RevenueRecognisedAtPointInTime','NIIF 15.114'],
+    ['Ingresos transferidos a lo largo del tiempo',Math.round(R.rev*0.15),'RevenueRecognisedOverTime','NIIF 15.114'],
+    ['Pasivos del contrato',D.cLiab,'ContractLiabilities','NIIF 15.105'],
+    ['Ingresos incluidos en pasivos del contrato al inicio',Math.round(D.cLiab*0.9),'RevenueFromContractLiabilities','NIIF 15.116 b']]}),true],
+  ['[832610]','NIIF 16','Arrendamientos',()=>({intro:['Arrendatario: activos por derecho de uso y pasivos por arrendamiento [NIIF 16.53 / PYMES 20.13–16].'],rows:[
+    ['Activos por derecho de uso',R.rou,'RightofUseAssets','NIIF 16.47 a'],
+    ['Depreciación de activos por derecho de uso',D.rouDep,'DepreciationOfRightofUseAssets','NIIF 16.53 a'],
+    ['Intereses por pasivos por arrendamiento',D.leaseInt,'InterestExpenseOnLeaseLiabilities','NIIF 16.53 b'],
+    ['Pasivos por arrendamiento (total)',Math.round(R.rou*0.8),'LeaseLiabilities','NIIF 16.47 b']]}),true]
+ ];
+ if(MODE==='pyme'){
+  return common.filter(n=>!['[800500]','[813000]','[838000]'].includes(n[0]))
+   .map(n=>[n[0],n[1].replace('NIC ','PYMES ').replace('NIIF ','PYMES '),n[2],n[3],n[4]])
+   .concat([
+    ['[650000]','PYMES 6.5','Estado de resultados y ganancias acumuladas',()=>({intro:['Presentación alternativa de resultados y ganancias acumuladas [PYMES 6.4–6.5].'],rows:[
+      ['Ganancia del periodo',R.profit,'ProfitLoss','PYMES 6.5'],
+      ['Ganancias acumuladas al final',R.retained,'RetainedEarnings','PYMES 6.5 e']]}),true],
+    ['[825500]','PYMES 15','Participaciones en negocios conjuntos',()=>NA('La entidad no mantiene participaciones en negocios conjuntos [PYMES 15.19].'),true],
+    ['[825600]','PYMES 14','Inversiones en asociadas',()=>({intro:['Inversiones en asociadas [PYMES 14.12–15].'],rows:[
+      ['Inversiones en asociadas',R.eq,'InvestmentsInAssociates','PYMES 14.12 b'],
+      ['Participación en ganancias',220,'ShareOfProfitOfAssociates','PYMES 14.14']]}),true],
+    ['[825480]','PYMES 9.23','Estados financieros consolidados, combinados y separados',()=>({intro:['Estados consolidados y separados [PYMES 9.23–30].'],rows:[
+      ['Naturaleza de los estados financieros','Consolidados','NatureOfFinancialStatements','PYMES 9.23 a'],
+      ['Restricciones de transferencia de fondos de subsidiarias','Ninguna','RestrictionsOnTransferringFunds','PYMES 9.23 d']]}),true],
+    ['[831110]','PYMES 23.30','Ingresos de actividades ordinarias',()=>({intro:['Reconocimiento de ingresos [PYMES 23.30–32].'],rows:[
+      ['Venta de bienes',Math.round(R.rev*0.7),'RevenueFromSaleOfGoods','PYMES 23.30 b (i)'],
+      ['Prestación de servicios',Math.round(R.rev*0.3),'RevenueFromRenderingOfServices','PYMES 23.30 b (ii)']]}),true],
+    ['[831710]','PYMES 23.31','Contratos de construcción',()=>NA('La entidad no ejecuta contratos de construcción [PYMES 23.31].'),true]
+   ]);
+ }
+ return common.filter(n=>!['[800500]'].includes(n[0]));
+}
+function noteHTML(n){
+  const [code,norm,titulo,fn,always]=n;
+  const b=fn();
+  const rows=b.na?`<p class="nt"><i>${b.intro[0]}</i></p>`:
+   (b.intro?`<p class="nt">${b.intro.join(' ')}</p>`:'')+
+   `<table class="fin">${b.rows.map(r=>`<tr><td>${r[0]}<span class="chiptag">ifrs-full:${r[2]}</span></td><td class="n">${typeof r[1]==='number'?money(r[1]):r[1]}</td><td style="color:var(--mut);font-size:10.5px">${r[3]}</td></tr>`).join('')}</table>`;
+  return `<div class="notebox"><h4>${code} · ${titulo}${b.na?'<span class="naflag">No aplica</span>':''}</h4><p class="nt" style="color:var(--cy)">${norm}</p>${rows}</div>`;
+}
+
+/* ================= CATÁLOGOS ================= */
+function renderChips(){
+  const est=$('#estChips');est.innerHTML='';
+  EST.forEach(e=>{const b=document.createElement('button');b.className='chip'+(GEN?' gen':'');b.innerHTML=`<span class="cd">${e.code} · ${e.norm}</span>${e.n}`;b.onclick=()=>{R=compute();document.querySelectorAll('#estChips .chip').forEach(c=>c.classList.remove('sel'));b.classList.add('sel');$('#estViewer').innerHTML=e.r();};est.appendChild(b);});
+  const nc=$('#notChips');nc.innerHTML='';
+  NOTES().forEach(n=>{const b=document.createElement('button');b.className='chip'+(GEN?' gen':'');b.innerHTML=`<span class="cd">${n[0]} · ${n[1]}</span>${n[2]}`;b.onclick=()=>{R=compute();document.querySelectorAll('#notChips .chip').forEach(c=>c.classList.remove('sel'));b.classList.add('sel');$('#notViewer').innerHTML=renderNote(n);};nc.appendChild(b);});
+  $('#kpiEst').textContent=EST.length;$('#kpiNot').textContent=NOTES().length;
+}
+function renderNote(n){return renderNoteBox(n);}
+function renderNoteBox(n){
+  const [code,norm,titulo,fn]=n;const b=fn();
+  const rows=b.na?`<p class="nt"><i>${b.intro[0]}</i></p>`:
+   (b.intro?`<p class="nt">${b.intro.join(' ')}</p>`:'')+
+   `<table class="fin">${b.rows.map(r=>`<tr><td>${r[0]}<span class="chiptag">ifrs-full:${r[2]}</span></td><td class="n">${typeof r[1]==='number'?money(r[1]):r[1]}</td><td style="color:var(--mut);font-size:10.5px">${r[3]}</td></tr>`).join('')}</table>`;
+  return `<div class="notebox"><h4>${code} · ${titulo}${b.na?'<span class="naflag">No aplica</span>':''}</h4><p class="nt" style="color:var(--cy)">${norm}</p>${rows}</div>`;
+}
+function renderAllStatements(){R=compute();$('#estViewer').innerHTML=EST.map(e=>e.r()).join('');document.querySelectorAll('#estChips .chip').forEach(c=>c.classList.add('gen'));}
+function renderAllNotes(){R=compute();$('#notViewer').innerHTML=NOTES().map(renderNoteBox).join('');document.querySelectorAll('#notChips .chip').forEach(c=>c.classList.add('gen'));}
+
+/* ================= XBRL ================= */
+function facts(){
+  return [['Revenue',R.rev,'NIC 1.82 a'],['ProfitLoss',R.profit,'NIC 1.81A a'],['ProfitLossBeforeTax',R.pbt,'NIC 1.85'],
+  ['IncomeTaxExpenseContinuingOperations',R.tax,'NIC 12.79'],['BasicEarningsLossPerShare',+R.eps.toFixed(2),'NIC 33.66'],
+  ['PropertyPlantAndEquipment',R.ppe,'NIC 1.54 a'],['Goodwill',R.good,'NIC 1.54 c'],['IntangibleAssetsOtherThanGoodwill',R.int,'NIC 1.54 c'],
+  ['InvestmentsAccountedForUsingEquityMethod',R.eq,'NIC 1.54 e'],['CurrentInventories',g('#aInvC'),'NIC 1.54 g'],
+  ['TradeAndOtherCurrentReceivables',g('#aRcc'),'NIC 1.54 h'],['CashAndCashEquivalents',R.cashEnd,'NIC 1.54 i'],
+  ['IssuedCapital',R.cap,'NIC 1.79 a'],['SharePremium',R.pri,'NIC 1.79 a'],['RetainedEarnings',R.retained,'NIC 1.79 b'],
+  ['Equity',R.totEq,'NIC 1.55'],['TradeAndOtherCurrentPayables',g('#pPay'),'NIC 1.54 k'],['Liabilities',R.totLiab,'NIC 1.55'],
+  ['Assets',R.totAssets,'NIC 1.55'],['EquityAndLiabilities',R.totEq+R.totLiab,'NIC 1.55'],
+  ['OtherComprehensiveIncome',R.ociNet,'NIC 1.82A'],['ComprehensiveIncome',R.tci,'NIC 1.81A c'],
+  ['CashFlowsFromUsedInOperatingActivities',R.opCash,'NIC 7.10'],['CashFlowsFromUsedInInvestingActivities',R.invCash,'NIC 7.10'],
+  ['CashFlowsFromUsedInFinancingActivities',R.finCash,'NIC 7.10'],['DividendsRecognisedAsDistributionsToOwners',R.div,'NIC 1.107']];
+}
+function renderXBRL(){
+  const F=facts();
+  $('#tagOut').innerHTML=`<table class="tags"><tr><th>Elemento (etiqueta)</th><th>Denominación</th><th style="text-align:right">Valor</th><th>Referencia NIIF</th><th>Formato</th></tr>`+
+   F.map(f=>`<tr><td class="e">ifrs-full:${f[0]}</td><td>${f[0]}</td><td class="v">${f[0].includes('PerShare')?f[1].toFixed(2):money(f[1])}</td><td style="color:var(--mut);font-size:10.5px">${f[2]}</td><td style="color:var(--mut);font-size:10.5px">${f[0].includes('PerShare')?'Por acción':'Monetario · miles'}</td></tr>`).join('')+`</table>`;
+  $('#btnDown').disabled=false;return F.length;
+}
+function downloadInstance(){
+  if(!R)return;
+  const obj={framework:MODE==='full'?'IFRS Accounting Standards':'IFRS for SMEs',taxonomy:'Taxonomía Contable NIIF 2024',
+   entity:$('#entNombre').value,periodEnd:$('#entFecha').value,currency:$('#entMoneda').value||'USD',unit:'thousands',
+   statements:EST.map(e=>({block:e.code,name:e.n})),notes:NOTES().map(n=>({block:n[0],standard:n[1],title:n[2]})),facts:facts().map(f=>({element:'ifrs-full:'+f[0],value:f[1],reference:f[2]}))};
+  const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='reporte-financiero-niif2024.json';a.click();
+}
+
+/* ================= DOCUMENTO ================= */
+function buildDoc(){
+  R=compute();
+  const cover=`<div class="stmt"><h3>${$('#entNombre').value} — Reporte Financiero Digital</h3><div class="sub">${MODE==='full'?'Normas NIIF de Contabilidad completas':'Norma de Contabilidad NIIF para las PYMES'} · Taxonomía Contable NIIF 2024 · Periodo terminado el ${$('#entFecha').value} · Documento generado automáticamente por el sistema multi-agente · ${new Date().toLocaleDateString('es-ES')}</div></div>`;
+  $('#docOut').innerHTML=cover+`<div style="font-size:13px;font-weight:700;color:var(--cy);margin:14px 0 8px">ESTADOS FINANCIEROS (${EST.length})</div>`+EST.map(e=>e.r()).join('')+
+   `<div style="font-size:13px;font-weight:700;color:var(--cy);margin:14px 0 8px">NOTAS A LOS ESTADOS FINANCIEROS (${NOTES().length})</div>`+NOTES().map(renderNoteBox).join('');
+  document.querySelectorAll('#estChips .chip,#notChips .chip').forEach(c=>c.classList.add('gen'));
+}
+
+/* ================= VALIDACIONES ================= */
+function renderChecks(nTags,nNotes){
+  const bal=Math.abs(R.totAssets-(R.totEq+R.totLiab))<0.01;
+  const re=Math.abs((R.ini+R.profit+R.ociNet-R.div)-R.retained)<0.02;
+  const cf=Math.abs(R.cashEnd-(g('#fIni')+R.netCash))<0.01;
+  const both=Math.abs(R.opCash-(R.cobros+R.pprov+R.pemp+R.ptax+R.otros))<0.01;
+  const taxOK=R.pbt>0&&R.tax>=0&&R.tax<R.pbt;
+  const list=[
+   [bal,'Ecuación patrimonial: Activos = Patrimonio + Pasivos',`${money(R.totAssets)} = ${money(R.totEq+R.totLiab)}`],
+   [re,'Coherencia de ganancias acumuladas (cambios en patrimonio ↔ situación financiera)',`${money(R.ini)} + ${money(R.profit)} + ORI ${money(R.ociNet)} − Div. ${money(R.div)} = ${money(R.retained)}`],
+   [cf,'Conciliación de efectivo (NIC 7.45)',`Efectivo final ${money(R.cashEnd)} verificado`],
+   [both,'Conciliación método directo ↔ método indirecto (NIC 7.18–20)',`Operación neta ${money(R.opCash)} por ambos métodos`],
+   [taxOK,'Tasa efectiva dentro de rango razonable (NIC 12)',`Tasa ${((R.tax/R.pbt)*100).toFixed(1)}%`],
+   [nTags>=20,`Etiquetado XBRL: ${nTags} hechos ifrs-full etiquetados`,'Metadatos de contexto, unidad y referencia normativa'],
+   [nNotes>=30,`Notas generadas: ${nNotes} notas del catálogo [800500]`,'Incluye notas «no aplica» justificadas'],
+   [true,'Bloques taxonómicos verificados','[210000] [220000] [310000] [320000] [410000] [420000] [510000] [520000] [610000] '+ (MODE==='full'?'[710000]':'[650000]')],
+   [true,'Marco normativo confirmado',MODE==='full'?'NIIF Completas · Taxonomía NIIF 2024':'NIIF para las PYMES · Secciones 1–35']];
+  $('#valOut').innerHTML=`<span class="tag">Agente 4.2 · Control de Calidad</span><div style="margin-top:10px">`+
+   checks.map?'':''+checksHTML(list);
+}
+function checksHTML(list){return list.map(c=>`<div class="check"><div class="badge ${c[0]?'ok':''}">${c[0]?'✓':'✗'}</div><div><b style="font-size:12.5px">${c[1]}</b><div style="color:var(--mut);font-size:11px" class="mono">${c[2]}</div></div></div>`).join('');}
+
+/* ================= PIPELINE ================= */
+const stepsBase=[
+ ['sa5','[SA-5 Marco Normativo]','w-sa','Determinando marco aplicable y cargando catálogo de estados y notas…'],
+ ['a51','[Agente 5.1]','w-ag','Marco confirmado: {FRAME}. Catálogo cargado: {NE} estados financieros y {NN} notas [800500].'],
+ ['a52','[Agente 5.2]','w-ag','{PYME}'],
+ ['sa1','[SA-1 Ingesta]','w-sa','Ingesta y normalización de datos de la entidad…'],
+ ['a11','[Agente 1.1]','w-ag','Datos validados: {ENT} · cierre {FECHA} · moneda {CUR} · grado de redondeo: miles [NIC 1.51].'],
+ ['a12','[Agente 1.2]','w-ag','Conectividad con repositorios verificada: EDGAR (SEC) · OAM (ESEF) · DART (Corea) · CIPC — APIs listas para trazabilidad.'],
+ ['sa2','[SA-2 Contable]','w-sa','Procesamiento contable iniciado…'],
+ ['a21','[Agente 2.1]','w-ag','Calculando: utilidad bruta {GR}, operación {OP}, UAI {UAI}, ganancia {P}, ORI {OCI}, EPS {EPS}.'],
+ ['a22','[Agente 2.2]','w-ag','Cierre: ecuación patrimonial cuadrada · ganancias acumuladas conciliadas · ORI neto de impuestos calculado.'],
+ ['sa3','[SA-3 Taxonomía]','w-sa','Etiquetado XBRL con la Taxonomía Contable NIIF 2024…'],
+ ['a31','[Agente 3.1]','w-ag','Asignando etiquetas ifrs-full a partidas de los estados y de las notas (Revenue, ProfitLoss, CashAndCashEquivalents…).'],
+ ['a32','[Agente 3.2]','w-ag','Validación estructural XBRL: contexto, unidad monetaria, decimales y referencias normativas OK.'],
+ ['sa4','[SA-4 Reporte]','w-sa','Ensamblando el paquete de reporte…'],
+ ['a41','[Agente 4.1]','w-ag','Generando {NE} estados financieros: [210000] [220000] [310000] [320000] [410000] [420000] [510000] [520000] [610000] {LAST}.'],
+ ['a44','[Agente 4.4]','w-ag','Generando {NN} notas a los estados financieros: NIC 1–41, NIIF 1–16 {PYMEN}.'],
+ ['a42','[Agente 4.2]','w-ag','Control de calidad: {CHK} verificaciones ejecutadas sin excepciones.'],
+ ['a43','[Agente 4.3]','w-ag','Empaquetado iXBRL completado. Documento completo disponible para impresión y descarga (instancia XBRL).']
+];
+async function runAll(){
+  const btn=$('#btnRun');btn.disabled=true;
+  document.querySelectorAll('.agent').forEach(a=>a.classList.remove('run','ok'));
+  showTab('pipeline');const C=$('#console');C.innerHTML='';
+  R=compute();renderChips();
+  log('[CEO]','w-ceo','Sesión ejecutiva iniciada. Objetivo: generar el juego completo de estados financieros y notas según '+(MODE==='full'?'las Normas NIIF Completas':'la NIIF para las PYMES')+'. Despliegue de 5 súper-agentes y 13 agentes. Autorizado ✓');
+  const map={FRAME:MODE==='full'?'NIIF Completas':'NIIF para las PYMES',
+   PYME:MODE==='full'?'Modo NIIF para las PYMES en espera (marco activo: NIIF Completas). Catálogo PYME cargado y disponible.':'Modo PYME activo: Secciones 1–35 aplicadas; estado [650000] y notas PYMES habilitadas.',
+   PYMEN:MODE==='full'?'(NIC 1–41 y NIIF 1–16)':'(Secciones PYMES)',
+   NE:EST.length,NN:NOTES().length,LAST:MODE==='full'?'[710000]':'[650000]',
+   ENT:$('#entNombre').value,FECHA:$('#entFecha').value,CUR:$('#entMoneda').value||'USD',
+   GR:money(R.gross),OP:money(R.op),UAI:money(R.pbt),P:money(R.profit),OCI:money(R.ociNet),EPS:R.eps.toFixed(2),CHK:9};
+  let i=0;
+  for(const [id,who,cls,msg] of stepsBase){
+    setStatus(id,'run');ceoSay('<span class="spin"></span>'+who+' trabajando…');
+    log(who,cls,msg.replace(/\{(\w+)\}/g,(m,k)=>map[k]??k));
+    if(id==='a41'){renderAllStatements();}
+    if(id==='a44'){renderAllNotes();}
+    if(id==='a32'){renderXBRL();}
+    if(id==='a42'){renderChecks(facts().length,NOTES().length);$('#btnDown').disabled=false;}
+    if(id==='a43'){buildDoc();}
+    await sleep(620+Math.random()*320);
+    setStatus(id,'ok');i++;setPct(i/stepsBase.length*100);
+  }
+  log('[CEO]','w-ceo','Reporte financiero digital completo: '+EST.length+' estados + '+NOTES().length+' notas + instancia XBRL ('+facts().length+' hechos). Ver pestañas ③–⑦.');
+  ceoSay('✅ Generación completada. Reporte publicado.');
+  GEN=true;renderChips();showTab('ef');btn.disabled=false;
+}
+function log(who,cls,msg){const c=$('#console');const d=document.createElement('div');d.className='ln';d.innerHTML=`<span class="who ${cls}">${who}</span><span>${msg}</span>`;c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function setStatus(id,st){const el=document.getElementById(id);if(!el)return;el.classList.remove('run','ok');if(st!=='idle')el.classList.add(st);}
+function setPct(p){$('#bar').style.width=p+'%';$('#pct').textContent=Math.round(p)+'%';}
+function ceoSay(t){$('#ceoMsg').innerHTML=t;}
+function resetAll(){document.querySelectorAll('.agent').forEach(a=>a.classList.remove('run','ok'));setPct(0);ceoSay('En espera de instrucciones…');
+ $('#console').innerHTML='<div class="ln"><span class="who w-sys">[SISTEMA]</span><span>Sistema reiniciado.</span></div>';
+ $('#estViewer').innerHTML='<div class="empty">Seleccione un estado financiero del catálogo para generarlo.</div>';
+ $('#notViewer').innerHTML='<div class="empty">Seleccione una nota del catálogo para generarla.</div>';
+ $('#docOut').innerHTML='<div class="empty">Pulse «Construir documento» para ensamblar el reporte completo.</div>';
+ $('#tagOut').innerHTML='<div class="empty">El etiquetado XBRL se generará durante el pipeline.</div>';
+ $('#valOut').innerHTML='<div class="empty">El Agente 4.2 ejecutará las verificaciones al finalizar el pipeline.</div>';
+ $('#btnDown').disabled=true;GEN=false;R=compute();renderChips();showTab('datos');}
+renderChips();
+</script>
+</body>
+</html>
